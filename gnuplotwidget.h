@@ -36,9 +36,9 @@ public slots:
     void plot(const QString &gpCmd);
     void gnuplotOutput(const QString& output);
 private:
-    QtGnuplotInstance gp;
-    QtGnuplotWidget*  gpWidget;
-    QtGnuplotWindow*  gpWindow;
+    QtGnuplotInstance gp_;
+    QtGnuplotWidget*  gpWidget_;
+    QtGnuplotWindow*  gpWindow_;
 };
 
 #endif // GNUPLOTWIDGET_H

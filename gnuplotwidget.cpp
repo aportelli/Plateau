@@ -22,24 +22,26 @@
 #include "gnuplot/QtGnuplotWindow.h"
 
 GnuplotWidget::GnuplotWidget(QWidget *parent)
-: QWidget(parent), gp(0, "/usr/local/bin/gnuplot")
+: QWidget(parent), gp_(0, "/usr/local/bin/gnuplot")
 {
     QVBoxLayout* layout = new QVBoxLayout(this);
 
-    gpWindow = new QtGnuplotWindow(0, nullptr, nullptr);
-    gpWidget = dynamic_cast<QtGnuplotWidget *>(gpWindow->centralWidget());
-    gpWindow->setWindowFlag(Qt::Widget);
-    layout->addWidget(gpWindow);
+    gpWindow_ = new QtGnuplotWindow(0, nullptr, nullptr);
+    gpWidget_ = dynamic_cast<QtGnuplotWidget *>(gpWindow_->centralWidget());
+    gpWindow_->setWindowFlag(Qt::Widget);
+    layout->addWidget(gpWindow_);
     setLayout(layout);
-    gp.setWidget(gpWidget);
-    connect(&gp, SIGNAL(gnuplotOutput(const QString&)), this,
+    gp_.setWidget(gpWidget_);
+    connect(&gp_, SIGNAL(gnuplotOutput(const QString&)), this,
             SLOT(gnuplotOutput(const QString&)));
 
 }
 
 void GnuplotWidget::plot(const QString &gpCmd)
 {
-    gp << gpCmd << "\n";
+    gp_ << gpCmd << "\n";
+}
+
 }
 
 void GnuplotWidget::gnuplotOutput(const QString& output)
