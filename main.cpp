@@ -18,16 +18,22 @@
  */
 
 #include "mainwindow.h"
+#include <LatAnalyze/Core/Math.hpp>
+
+using namespace Latan;
 
 int main(int argc, char* argv[])
 {
     MainWindow   *mainWindow;
     QApplication app(argc, argv);
+    Plot         p;
 
     mainWindow = new MainWindow;
-    auto *widget = mainWindow->gnuplotWidget();
+    auto *gp = mainWindow->gnuplotWidget();
     mainWindow->show();
-    widget->plot("set grid; plot x**2 w l lt 2 lw 4");
+    p << PlotRange(Axis::x, -5.0, 5.0) << PlotRange(Axis::y, -5.0, 20.0);
+    p << PlotFunction(StdMath::tgamma, -5, 5);
+    gp->plot(p);
 
     app.exec();
 

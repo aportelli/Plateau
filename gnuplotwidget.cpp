@@ -21,6 +21,8 @@
 #include "gnuplot/QtGnuplotWidget.h"
 #include "gnuplot/QtGnuplotWindow.h"
 
+using namespace Latan;
+
 GnuplotWidget::GnuplotWidget(QWidget *parent)
 : QWidget(parent), gp_(0, "/usr/local/bin/gnuplot")
 {
@@ -42,6 +44,12 @@ void GnuplotWidget::plot(const QString &gpCmd)
     gp_ << gpCmd << "\n";
 }
 
+void GnuplotWidget::plot(const Plot &p)
+{
+    std::ostringstream out;
+
+    out << p;
+    plot(out.str().c_str());
 }
 
 void GnuplotWidget::gnuplotOutput(const QString& output)

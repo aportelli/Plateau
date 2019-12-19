@@ -26,6 +26,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <QWidget>
+#include <LatAnalyze/Core/Plot.hpp>
 
 class GnuplotWidget : public QWidget
 {
@@ -34,6 +35,7 @@ public:
     explicit GnuplotWidget(QWidget *parent = nullptr);
 public slots:
     void plot(const QString &gpCmd);
+    void plot(const Latan::Plot &p);
     void gnuplotOutput(const QString& output);
 private:
     QtGnuplotInstance gp_;
