@@ -33,6 +33,7 @@ HEADERS += \
     gnuplot/QtGnuplotScene.h \
     gnuplot/QtGnuplotWidget.h \
     gnuplot/QtGnuplotWindow.h \
+    gnuplot/mousecmn.h \
     gnuplotwidget.h \
     mainwindow.h
 
@@ -47,3 +48,10 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     gnuplot/QtGnuplotResource.qrc
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../local/lib/release/ -lLatAnalyze
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../local/lib/debug/ -lLatAnalyze
+else:unix: LIBS += -L$$PWD/../../local/lib/ -lLatAnalyze
+
+INCLUDEPATH += $$PWD/../../local/include
+DEPENDPATH += $$PWD/../../local/include
