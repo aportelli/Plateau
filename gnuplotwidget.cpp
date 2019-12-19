@@ -29,7 +29,7 @@ GnuplotWidget::GnuplotWidget(QWidget *parent)
     QVBoxLayout* layout = new QVBoxLayout(this);
 
     gpWindow_ = new QtGnuplotWindow(0, nullptr, nullptr);
-    gpWidget_ = dynamic_cast<QtGnuplotWidget *>(gpWindow_->centralWidget());
+    gpWidget_ = qobject_cast<QtGnuplotWidget *>(gpWindow_->centralWidget());
     gpWindow_->setWindowFlag(Qt::Widget);
     layout->addWidget(gpWindow_);
     setLayout(layout);
