@@ -36,6 +36,12 @@ public:
     ~MainWindow();
     GnuplotWidget * gnuplotWidget(void);
 
+public slots:
+    void open(void);
+
+signals:
+    void loadCorrelator(const QString &filename);
+
 public:
     Ui::MainWindow *ui;
 };

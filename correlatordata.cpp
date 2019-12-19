@@ -1,5 +1,5 @@
 /*
- * mainwindow.cpp, part of Plateau
+ * correlatordata.cpp, part of Plateau
  *
  * Copyright (C) 2019 Antonin Portelli
  *
@@ -17,32 +17,27 @@
  * along with Plateau.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
+#include "correlatordata.h"
+#include <QtCore>
+#include <LatAnalyze/Io/Io.hpp>
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+using namespace Latan;
+
+CorrelatorData::CorrelatorData(QObject *parent) : QObject(parent)
 {
-    ui->setupUi(this);
+
 }
 
-MainWindow::~MainWindow()
+void CorrelatorData::load(const QString &filename)
 {
-    delete ui;
-}
+    Index nt;
+    DVec  t;
 
-GnuplotWidget * MainWindow::gnuplotWidget(void)
-{
-    return ui->gpwidget;
+    sample_ = Io::load<DMatSample>(filename.toStdString());
+    nt      = sample_[central].rows();
+    sample_ = sample_.block(0, 0, nt, 1);
+    t.setLinSpaced(nt, 0, nt - 1);
+    p_.reset();
+    p_ << PlotData(t, sample_);
+    emit plotUpdate(p_);
 }
-
-void MainWindow::open(void)
-{
-    QString filename = QFileDialog::getOpenFileName(this);
-    if (!filename.isEmpty())
-    {
-        emit loadCorrelator(filename);
-    }
-}
-

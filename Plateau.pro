@@ -22,6 +22,7 @@ SOURCES += \
     gnuplot/QtGnuplotScene.cpp \
     gnuplot/QtGnuplotWidget.cpp \
     gnuplot/QtGnuplotWindow.cpp \
+    correlatordata.cpp \
     gnuplotwidget.cpp \
     main.cpp \
     mainwindow.cpp
@@ -34,6 +35,7 @@ HEADERS += \
     gnuplot/QtGnuplotWidget.h \
     gnuplot/QtGnuplotWindow.h \
     gnuplot/mousecmn.h \
+    correlatordata.h \
     gnuplotwidget.h \
     mainwindow.h
 

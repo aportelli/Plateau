@@ -18,22 +18,26 @@
  */
 
 #include "mainwindow.h"
+#include "correlatordata.h"
 #include <LatAnalyze/Core/Math.hpp>
 
 using namespace Latan;
 
 int main(int argc, char* argv[])
 {
-    MainWindow   *mainWindow;
-    QApplication app(argc, argv);
-    Plot         p;
+    MainWindow     *mainWindow;
+    QApplication   app(argc, argv);
+    CorrelatorData *data;
 
     mainWindow = new MainWindow;
-    auto *gp = mainWindow->gnuplotWidget();
+    data       = new CorrelatorData;
+
+    GnuplotWidget *gp = mainWindow->gnuplotWidget();
+    QObject::connect(mainWindow, SIGNAL(loadCorrelator(const QString &)),
+                     data, SLOT(load(const QString &)));
+    QObject::connect(data, SIGNAL(plotUpdate(const Latan::Plot&)),
+                     gp, SLOT(plot(const Latan::Plot&)));
     mainWindow->show();
-    p << PlotRange(Axis::x, -5.0, 5.0) << PlotRange(Axis::y, -5.0, 20.0);
-    p << PlotFunction(StdMath::tgamma, -5, 5);
-    gp->plot(p);
 
     app.exec();
 

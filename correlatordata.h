@@ -1,5 +1,5 @@
 /*
- * mainwindow.cpp, part of Plateau
+ * correlatordata.h, part of Plateau
  *
  * Copyright (C) 2019 Antonin Portelli
  *
@@ -17,32 +17,28 @@
  * along with Plateau.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
+#ifndef CORRELATORDATA_H
+#define CORRELATORDATA_H
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+#include <QObject>
+#include <LatAnalyze/Statistics/MatSample.hpp>
+#include <LatAnalyze/Core/Plot.hpp>
+
+class CorrelatorData : public QObject
 {
-    ui->setupUi(this);
-}
+    Q_OBJECT
+public:
+    explicit CorrelatorData(QObject *parent = nullptr);
 
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
+public slots:
+    void load(const QString &filename);
 
-GnuplotWidget * MainWindow::gnuplotWidget(void)
-{
-    return ui->gpwidget;
-}
+signals:
+    void plotUpdate(const Latan::Plot &p);
 
-void MainWindow::open(void)
-{
-    QString filename = QFileDialog::getOpenFileName(this);
-    if (!filename.isEmpty())
-    {
-        emit loadCorrelator(filename);
-    }
-}
+private:
+    Latan::DMatSample sample_;
+    Latan::Plot       p_;
+};
 
+#endif // CORRELATORDATA_H
