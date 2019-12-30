@@ -27,18 +27,22 @@
 class CorrelatorData : public QObject
 {
     Q_OBJECT
+
 public:
     explicit CorrelatorData(QObject *parent = nullptr);
+    const Latan::DMatSample & sample(void);
+    bool loaded(void);
 
 public slots:
     void load(const QString &filename);
 
 signals:
-    void plotUpdate(const Latan::Plot &p);
+    void dataChanged(void);
 
 private:
     Latan::DMatSample sample_;
     Latan::Plot       p_;
+    bool              loaded_{false};
 };
 
 #endif // CORRELATORDATA_H

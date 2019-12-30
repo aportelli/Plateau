@@ -21,10 +21,11 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "correlatordata.h"
 #include "gnuplotwidget.h"
 
 namespace Ui {
-class MainWindow;
+    class MainWindow;
 }
 
 class MainWindow : public QMainWindow
@@ -32,18 +33,34 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    enum PlotType
+    {
+        corr  = 0,
+        em    = 1
+    };
+    static constexpr unsigned int nPlot = 2;
+
+public:
     explicit MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
-    GnuplotWidget * gnuplotWidget(void);
+    ~MainWindow(void);
+    GnuplotWidget * gnuplotWidget(const PlotType p);
+    void replot(const PlotType p);
 
 public slots:
     void open(void);
+    void replot(void);
+    void corrLogAbs(int logAbs);
 
 signals:
-    void loadCorrelator(const QString &filename);
+    void status(const QString &msg);
+    void plotOptionsChanged(void);
 
-public:
-    Ui::MainWindow *ui;
+private:
+    Ui::MainWindow                     *ui_;
+    CorrelatorData                     *data_;
+    std::array<GnuplotWidget *, nPlot> gpWidget_;
+    std::array<Latan::Plot, nPlot>     plot_;
+    bool                               logAbs_{true};
 };
 
 #endif // MAINWINDOW_H

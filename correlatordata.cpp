@@ -28,16 +28,23 @@ CorrelatorData::CorrelatorData(QObject *parent) : QObject(parent)
 
 }
 
+const Latan::DMatSample & CorrelatorData::sample(void)
+{
+    return sample_;
+}
+
 void CorrelatorData::load(const QString &filename)
 {
     Index nt;
-    DVec  t;
 
     sample_ = Io::load<DMatSample>(filename.toStdString());
     nt      = sample_[central].rows();
     sample_ = sample_.block(0, 0, nt, 1);
-    t.setLinSpaced(nt, 0, nt - 1);
-    p_.reset();
-    p_ << PlotData(t, sample_);
-    emit plotUpdate(p_);
+    loaded_ = true;
+    emit dataChanged();
+}
+
+bool CorrelatorData::loaded(void)
+{
+    return loaded_;
 }

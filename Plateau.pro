@@ -21,7 +21,6 @@ SOURCES += \
     gnuplot/QtGnuplotItems.cpp \
     gnuplot/QtGnuplotScene.cpp \
     gnuplot/QtGnuplotWidget.cpp \
-    gnuplot/QtGnuplotWindow.cpp \
     correlatordata.cpp \
     gnuplotwidget.cpp \
     main.cpp \
@@ -33,14 +32,13 @@ HEADERS += \
     gnuplot/QtGnuplotItems.h \
     gnuplot/QtGnuplotScene.h \
     gnuplot/QtGnuplotWidget.h \
-    gnuplot/QtGnuplotWindow.h \
     gnuplot/mousecmn.h \
     correlatordata.h \
     gnuplotwidget.h \
     mainwindow.h
 
 FORMS += \
-    gnuplot/QtGnuplotSettings.ui \
+    gnuplotwidget.ui \
     mainwindow.ui
 
 # Default rules for deployment.
@@ -48,8 +46,7 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-RESOURCES += \
-    gnuplot/QtGnuplotResource.qrc
+RESOURCES +=
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../local/lib/release/ -lLatAnalyze
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../local/lib/debug/ -lLatAnalyze

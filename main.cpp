@@ -17,6 +17,8 @@
  * along with Plateau.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#define GPPATH "/usr/local/bin/gnuplot"
+
 #include "mainwindow.h"
 #include "correlatordata.h"
 #include <LatAnalyze/Core/Math.hpp>
@@ -27,16 +29,8 @@ int main(int argc, char* argv[])
 {
     MainWindow     *mainWindow;
     QApplication   app(argc, argv);
-    CorrelatorData *data;
 
     mainWindow = new MainWindow;
-    data       = new CorrelatorData;
-
-    GnuplotWidget *gp = mainWindow->gnuplotWidget();
-    QObject::connect(mainWindow, SIGNAL(loadCorrelator(const QString &)),
-                     data, SLOT(load(const QString &)));
-    QObject::connect(data, SIGNAL(plotUpdate(const Latan::Plot&)),
-                     gp, SLOT(plot(const Latan::Plot&)));
     mainWindow->show();
 
     app.exec();
