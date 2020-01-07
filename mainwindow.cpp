@@ -26,7 +26,8 @@ using namespace Latan;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui_(new Ui::MainWindow),
-    data_(new CorrelatorData)
+    data_(new CorrelatorData(this)),
+    dataModel_(new DataModel(this))
 {
     ui_->setupUi(this);
     connect(data_, SIGNAL(dataChanged()), this, SLOT(replot()));
@@ -37,12 +38,21 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     ui_->corrPlotLayout->addWidget(gpWidget_[PlotType::corr]);
     ui_->emPlotLayout->addWidget(gpWidget_[PlotType::em]);
+    ui_->dataTableView->setModel(dataModel_);
+    ui_->dataTableView->hideColumn(2);
+    ui_->addDataButton->setDefaultAction(ui_->actionAddFile);
+    ui_->removeDataButton->setDefaultAction(ui_->actionRemoveFile);
 }
 
 MainWindow::~MainWindow(void)
 {
     delete ui_;
     delete data_;
+    delete dataModel_;
+    for (unsigned int p = 0; p < nPlot; ++p)
+    {
+        delete gpWidget_[p];
+    }
 }
 
 GnuplotWidget * MainWindow::gnuplotWidget(const PlotType p)
@@ -89,7 +99,8 @@ void MainWindow::replot(const PlotType p)
 
 void MainWindow::open(void)
 {
-    QString filename = QFileDialog::getOpenFileName(this, "Open file", "~",
+    QString filename = QFileDialog::getOpenFileName(this, "Open file",
+                                                    QDir::homePath(),
                                                     "LatAnalyze sample (*.h5 *.dat)");
     emit status("loading ...");
     if (!filename.isEmpty())
@@ -97,6 +108,33 @@ void MainWindow::open(void)
         data_->load(filename);
     }
     emit status("");
+}
+
+void MainWindow::addData(void)
+{
+    QString filename = QFileDialog::getOpenFileName(this, "Add file",
+                                                    QDir::homePath(),
+                                                    "LatAnalyze sample (*.h5 *.dat)");
+
+    if (!filename.isEmpty())
+    {
+        dataModel_->addFile(filename);
+    }
+}
+
+void MainWindow::removeData(void)
+{
+    QModelIndexList l = ui_->dataTableView->selectionModel()->selectedIndexes();
+    QStringList     toRemove;
+
+    for (int i = 0; i < l.size(); ++i)
+    {
+        toRemove.append(dataModel_->filepath(l.at(i).row()));
+    }
+    for (int j = 0; j < toRemove.size(); ++j)
+    {
+        dataModel_->removeFile(toRemove.at(j));
+    }
 }
 
 void MainWindow::replot(void)

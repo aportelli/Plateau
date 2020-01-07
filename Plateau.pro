@@ -16,6 +16,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    datamodel.cpp \
     gnuplot/QtGnuplotEvent.cpp \
     gnuplot/QtGnuplotInstance.cpp \
     gnuplot/QtGnuplotItems.cpp \
@@ -27,6 +28,7 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
+    datamodel.h \
     gnuplot/QtGnuplotEvent.h \
     gnuplot/QtGnuplotInstance.h \
     gnuplot/QtGnuplotItems.h \

@@ -22,6 +22,7 @@
 
 #include <QMainWindow>
 #include "correlatordata.h"
+#include "datamodel.h"
 #include "gnuplotwidget.h"
 
 namespace Ui {
@@ -48,11 +49,14 @@ public:
 
 public slots:
     void open(void);
+    void addData(void);
+    void removeData(void);
     void replot(void);
     void corrLogAbs(int logAbs);
 
 signals:
     void status(const QString &msg);
+    void dataChanged(const QStringListModel &model);
     void plotOptionsChanged(void);
 
 private:
@@ -61,6 +65,7 @@ private:
     std::array<GnuplotWidget *, nPlot> gpWidget_;
     std::array<Latan::Plot, nPlot>     plot_;
     bool                               logAbs_{true};
+    DataModel                          *dataModel_;
 };
 
 #endif // MAINWINDOW_H

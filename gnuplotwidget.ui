@@ -31,6 +31,7 @@
    </attribute>
    <addaction name="actionSavePlot"/>
    <addaction name="actionSavePDF"/>
+   <addaction name="actionResetZoom"/>
   </widget>
   <widget class="QToolBar" name="mouseToolBar">
    <property name="windowTitle">
@@ -54,6 +55,11 @@
   <action name="actionSavePlot">
    <property name="text">
     <string>Save plot</string>
+   </property>
+  </action>
+  <action name="actionResetZoom">
+   <property name="text">
+    <string>Reset zoom</string>
    </property>
   </action>
  </widget>
@@ -91,9 +97,26 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionResetZoom</sender>
+   <signal>triggered()</signal>
+   <receiver>GnuplotWidget</receiver>
+   <slot>plot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>savePdf()</slot>
   <slot>savePlot()</slot>
+  <slot>plot()</slot>
  </slots>
 </ui>
