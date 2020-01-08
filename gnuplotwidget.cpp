@@ -23,6 +23,7 @@ GnuplotWidget::GnuplotWidget(Plot *plot, QWidget *parent) :
     ui_->mouseToolBar->addWidget(mouseLabel_);
     connect(gpWidget_, SIGNAL(statusTextChanged(const QString&)), mouseLabel_,
             SLOT(setText(const QString &)));
+    reset();
 }
 
 GnuplotWidget::~GnuplotWidget()
@@ -70,4 +71,10 @@ void GnuplotWidget::savePlot(void)
         return;
     }
     plot_->save(dirname.toStdString(), false);
+}
+
+void GnuplotWidget::reset(void)
+{
+    plot_->reset();
+    gp_ << "unset logscale\nset xrange [-1:1]\nset yrange [-1:1]\nplot 1/0 t''\n";
 }

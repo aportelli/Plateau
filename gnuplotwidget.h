@@ -23,6 +23,7 @@ public slots:
     void plot(void);
     void savePdf(void);
     void savePlot(void);
+    void reset(void);
 
 private:
     Ui::GnuplotWidget *ui_;
