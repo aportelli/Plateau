@@ -106,13 +106,14 @@ void DataModel::addFile(const QString filename)
         insertRows(last, 1);
         list_[last] = filename;
         i           = last;
+
+        data_->load(i, filename);
+
+        QModelIndex topLeft = createIndex(0,0),
+                    bottomRight = createIndex(list_.size() - 1, 1);
+
+        emit dataChanged(topLeft, bottomRight);
     }
-    data_->load(i, filename);
-
-    QModelIndex topLeft = createIndex(0,0),
-                bottomRight = createIndex(list_.size() - 1, 1);
-
-    emit dataChanged(topLeft, bottomRight);
 }
 
 void DataModel::removeFile(const QString filename)
@@ -123,12 +124,12 @@ void DataModel::removeFile(const QString filename)
     {
         removeRows(i, 1);
         data_->unload(i);
+
+        QModelIndex topLeft = createIndex(0,0),
+                    bottomRight = createIndex(list_.size() - 1, 1);
+
+        emit dataChanged(topLeft, bottomRight);
     }
-
-    QModelIndex topLeft = createIndex(0,0),
-                bottomRight = createIndex(list_.size() - 1, 1);
-
-    emit dataChanged(topLeft, bottomRight);
 }
 
 QString DataModel::filepath(const int i) const
