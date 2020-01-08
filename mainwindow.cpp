@@ -27,10 +27,10 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui_(new Ui::MainWindow),
     data_(new CorrelatorData(this)),
-    dataModel_(new DataModel(this))
+    dataModel_(new DataModel(data_, this))
 {
     ui_->setupUi(this);
-    connect(data_, SIGNAL(dataChanged()), this, SLOT(replot()));
+    connect(data_, SIGNAL(combinedSampleChanged()), this, SLOT(replot()));
     connect(this, SIGNAL(plotOptionsChanged()), this, SLOT(replot()));
     for (unsigned int p = 0; p < nPlot; ++p)
     {
@@ -42,6 +42,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui_->dataTableView->hideColumn(2);
     ui_->addDataButton->setDefaultAction(ui_->actionAddFile);
     ui_->removeDataButton->setDefaultAction(ui_->actionRemoveFile);
+    ui_->combineButton->setDefaultAction(ui_->actionCombine);
 }
 
 MainWindow::~MainWindow(void)
@@ -62,9 +63,10 @@ GnuplotWidget * MainWindow::gnuplotWidget(const PlotType p)
 
 void MainWindow::replot(const PlotType p)
 {
-    if (data_->loaded())
+    if (data_->hasCombination())
     {
-        const DMatSample &smp = data_->sample();
+        const DMatSample &smp = data_->combinedSample();
+
         Index nt;
         DVec  t;
 
@@ -95,19 +97,6 @@ void MainWindow::replot(const PlotType p)
         }
         }
     }
-}
-
-void MainWindow::open(void)
-{
-    QString filename = QFileDialog::getOpenFileName(this, "Open file",
-                                                    QDir::homePath(),
-                                                    "LatAnalyze sample (*.h5 *.dat)");
-    emit status("loading ...");
-    if (!filename.isEmpty())
-    {
-        data_->load(filename);
-    }
-    emit status("");
 }
 
 void MainWindow::addData(void)
@@ -149,5 +138,11 @@ void MainWindow::corrLogAbs(int logAbs)
 {
     logAbs_ = (logAbs == Qt::CheckState::Checked);
     emit plotOptionsChanged();
+}
+
+void MainWindow::combine(void)
+{
+   data_->setFunction(ui_->combineCode->toPlainText());
+   data_->combine();
 }
 

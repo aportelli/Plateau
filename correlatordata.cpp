@@ -19,32 +19,88 @@
 
 #include "correlatordata.h"
 #include <QtCore>
+#include <LatAnalyze/Functional/CompiledFunction.hpp>
 #include <LatAnalyze/Io/Io.hpp>
 
 using namespace Latan;
 
 CorrelatorData::CorrelatorData(QObject *parent) : QObject(parent)
 {
-
+    markDirty();
+    connect(this, SIGNAL(dataChanged()), this, SLOT(markDirty()));
 }
 
-const Latan::DMatSample & CorrelatorData::sample(void)
+const Latan::DMatSample & CorrelatorData::sample(const int i)
 {
-    return sample_;
+    return sample_.at(i);
 }
 
-void CorrelatorData::load(const QString &filename)
+const Latan::DMatSample & CorrelatorData::combinedSample(void)
 {
+    return combined_;
+}
+
+bool CorrelatorData::hasCombination(void)
+{
+    return hasCombination_;
+}
+
+bool CorrelatorData::isClean(void)
+{
+    return isClean_;
+}
+
+void CorrelatorData::load(const int i, const QString filename)
+{ 
     Index nt;
 
-    sample_ = Io::load<DMatSample>(filename.toStdString());
-    nt      = sample_[central].rows();
-    sample_ = sample_.block(0, 0, nt, 1);
-    loaded_ = true;
+    sample_.insert(i, Io::load<DMatSample>(filename.toStdString()));
+    nt         = sample_[i][central].rows();
+    sample_[i] = sample_[i].block(0, 0, nt, 1);
     emit dataChanged();
 }
 
-bool CorrelatorData::loaded(void)
+void CorrelatorData::unload(const int i)
 {
-    return loaded_;
+    sample_.removeAt(i);
+    emit dataChanged();
 }
+
+void CorrelatorData::setFunction(const QString code)
+{
+    code_  = code;
+    emit dataChanged();
+}
+
+void CorrelatorData::markDirty(void)
+{
+    isClean_ = false;
+}
+
+void CorrelatorData::combine(void)
+{
+    const unsigned int n = sample_.size();
+
+    if ((n > 0) and !isClean())
+    {
+        DoubleFunction     f = compile(code_.toStdString(), n);
+        DVec               buf(n);
+
+        combined_ = sample_.at(0);
+        FOR_STAT_ARRAY(combined_, s)
+        {
+            FOR_MAT(combined_[s], i, j)
+            {
+                for (unsigned int k = 0; k < n; ++k)
+                {
+                    buf[k] = sample_.at(k)[s](i,j);
+                }
+                combined_[s](i, j) = f(buf);
+            }
+        }
+        isClean_        = true;
+        hasCombination_ = true;
+        emit combinedSampleChanged();
+    }
+}
+

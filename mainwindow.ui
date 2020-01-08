@@ -28,7 +28,7 @@
         </sizepolicy>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="corrTab">
         <attribute name="title">
@@ -210,19 +210,22 @@
           </layout>
          </item>
          <item>
-          <widget class="QPlainTextEdit" name="combineTextEdit">
+          <widget class="QPlainTextEdit" name="combineCode">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
              <horstretch>0</horstretch>
              <verstretch>1</verstretch>
             </sizepolicy>
            </property>
+           <property name="plainText">
+            <string>return x_0;</string>
+           </property>
           </widget>
          </item>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_4">
            <item>
-            <widget class="QToolButton" name="toolButton">
+            <widget class="QToolButton" name="combineButton">
              <property name="text">
               <string>...</string>
              </property>
@@ -301,14 +304,6 @@
     <bool>false</bool>
    </attribute>
   </widget>
-  <action name="actionOpen">
-   <property name="text">
-    <string>Open</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+O</string>
-   </property>
-  </action>
   <action name="actionAddFile">
    <property name="text">
     <string>Add file</string>
@@ -319,25 +314,14 @@
     <string>Remove file</string>
    </property>
   </action>
+  <action name="actionCombine">
+   <property name="text">
+    <string>Combine</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections>
-  <connection>
-   <sender>actionOpen</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>open()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>397</x>
-     <y>294</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>MainWindow</sender>
    <signal>status(QString)</signal>
@@ -402,6 +386,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionCombine</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>combine()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>546</x>
+     <y>389</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>status(QString)</signal>
@@ -409,5 +409,6 @@
   <slot>corrLogAbs(int)</slot>
   <slot>addData()</slot>
   <slot>removeData()</slot>
+  <slot>combine()</slot>
  </slots>
 </ui>

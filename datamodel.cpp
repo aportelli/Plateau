@@ -2,8 +2,9 @@
 #include <QFileInfo>
 #include <QDebug>
 
-DataModel::DataModel(QObject *parent)
+DataModel::DataModel(CorrelatorData *data, QObject *parent)
     : QAbstractTableModel(parent)
+    , data_(data)
 {}
 
 int DataModel::rowCount(const QModelIndex &) const
@@ -104,7 +105,9 @@ void DataModel::addFile(const QString filename)
 
         insertRows(last, 1);
         list_[last] = filename;
+        i           = last;
     }
+    data_->load(i, filename);
 
     QModelIndex topLeft = createIndex(0,0),
                 bottomRight = createIndex(list_.size() - 1, 1);
@@ -119,6 +122,7 @@ void DataModel::removeFile(const QString filename)
     if (i != -1)
     {
         removeRows(i, 1);
+        data_->unload(i);
     }
 
     QModelIndex topLeft = createIndex(0,0),
@@ -135,4 +139,9 @@ QString DataModel::filepath(const int i) const
 QString DataModel::filename(const int i) const
 {
     return data(index(i, 1)).toString();
+}
+
+CorrelatorData * DataModel::data(void)
+{
+    return data_;
 }

@@ -48,15 +48,14 @@ public:
     void replot(const PlotType p);
 
 public slots:
-    void open(void);
     void addData(void);
     void removeData(void);
     void replot(void);
     void corrLogAbs(int logAbs);
+    void combine(void);
 
 signals:
     void status(const QString &msg);
-    void dataChanged(const QStringListModel &model);
     void plotOptionsChanged(void);
 
 private:

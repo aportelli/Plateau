@@ -22,7 +22,6 @@
 
 #include <QObject>
 #include <LatAnalyze/Statistics/MatSample.hpp>
-#include <LatAnalyze/Core/Plot.hpp>
 
 class CorrelatorData : public QObject
 {
@@ -30,19 +29,27 @@ class CorrelatorData : public QObject
 
 public:
     explicit CorrelatorData(QObject *parent = nullptr);
-    const Latan::DMatSample & sample(void);
-    bool loaded(void);
+    const Latan::DMatSample & sample(const int i);
+    const Latan::DMatSample & combinedSample(void);
+    bool hasCombination(void);
+    bool isClean(void);
 
 public slots:
-    void load(const QString &filename);
+    void load(const int i, const QString filename);
+    void unload(const int i);
+    void setFunction(const QString code);
+    void markDirty(void);
+    void combine(void);
 
 signals:
     void dataChanged(void);
+    void combinedSampleChanged(void);
 
 private:
-    Latan::DMatSample sample_;
-    Latan::Plot       p_;
-    bool              loaded_{false};
+    bool                     isClean_, hasCombination_{false};
+    QList<Latan::DMatSample> sample_;
+    Latan::DMatSample        combined_;
+    QString                  code_;
 };
 
 #endif // CORRELATORDATA_H
