@@ -33,6 +33,7 @@ public:
     const Latan::DMatSample & combinedSample(void);
     bool hasCombination(void);
     bool isClean(void);
+    int  size(void);
 
 public slots:
     void load(const int i, const QString filename);

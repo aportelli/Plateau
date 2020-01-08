@@ -50,6 +50,11 @@ bool CorrelatorData::isClean(void)
     return isClean_;
 }
 
+int CorrelatorData::size(void)
+{
+    return sample_.size();
+}
+
 void CorrelatorData::load(const int i, const QString filename)
 { 
     Index nt;
