@@ -59,7 +59,7 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout">
            <item>
-            <widget class="QCheckBox" name="checkBox">
+            <widget class="QCheckBox" name="logAbsCheckBox">
              <property name="text">
               <string>log abs</string>
              </property>
@@ -176,6 +176,15 @@
              <verstretch>2</verstretch>
             </sizepolicy>
            </property>
+           <attribute name="horizontalHeaderMinimumSectionSize">
+            <number>50</number>
+           </attribute>
+           <attribute name="horizontalHeaderDefaultSectionSize">
+            <number>20</number>
+           </attribute>
+           <attribute name="horizontalHeaderStretchLastSection">
+            <bool>true</bool>
+           </attribute>
           </widget>
          </item>
          <item>
@@ -207,10 +216,20 @@
              </property>
             </spacer>
            </item>
+           <item>
+            <widget class="QCheckBox" name="combineCheckBox">
+             <property name="text">
+              <string>combine</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </item>
          <item>
           <widget class="QPlainTextEdit" name="combineCode">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -223,9 +242,12 @@
           </widget>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <layout class="QHBoxLayout" name="horizontalLayout_5">
            <item>
             <widget class="QToolButton" name="combineButton">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
              <property name="text">
               <string>...</string>
              </property>
@@ -243,13 +265,6 @@
               </size>
              </property>
             </spacer>
-           </item>
-           <item>
-            <widget class="QLabel" name="label">
-             <property name="text">
-              <string>TextLabel</string>
-             </property>
-            </widget>
            </item>
           </layout>
          </item>
@@ -316,7 +331,7 @@
   </action>
   <action name="actionCombine">
    <property name="text">
-    <string>Combine</string>
+    <string>Combine data</string>
    </property>
   </action>
  </widget>
@@ -334,23 +349,7 @@
     </hint>
     <hint type="destinationlabel">
      <x>397</x>
-     <y>688</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkBox</sender>
-   <signal>stateChanged(int)</signal>
-   <receiver>MainWindow</receiver>
-   <slot>corrLogAbs(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>55</x>
-     <y>503</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>448</x>
-     <y>344</y>
+     <y>778</y>
     </hint>
    </hints>
   </connection>
@@ -390,7 +389,7 @@
    <sender>actionCombine</sender>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
-   <slot>combine()</slot>
+   <slot>combineData()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -402,13 +401,44 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>combineCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>combineCode</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1050</x>
+     <y>472</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>939</x>
+     <y>572</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>combineCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>combineButton</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1035</x>
+     <y>485</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>836</x>
+     <y>699</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>status(QString)</signal>
   <slot>open()</slot>
-  <slot>corrLogAbs(int)</slot>
   <slot>addData()</slot>
   <slot>removeData()</slot>
-  <slot>combine()</slot>
+  <slot>combineData()</slot>
  </slots>
 </ui>

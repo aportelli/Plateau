@@ -46,24 +46,28 @@ public:
     ~MainWindow(void);
     GnuplotWidget * gnuplotWidget(const PlotType p);
     void replot(const PlotType p);
+    bool logAbsChecked(void);
+    bool combineDataChecked(void);
 
 public slots:
     void addData(void);
     void removeData(void);
     void replot(void);
-    void corrLogAbs(int logAbs);
-    void combine(void);
+    void combineData(void);
 
 signals:
     void status(const QString &msg);
     void plotOptionsChanged(void);
 
 private:
+    void plotCorr(Latan::Plot &p, const Latan::DVec &t,
+                  const Latan::DMatSample &c, const QString name);
+
+private:
     Ui::MainWindow                     *ui_;
     CorrelatorData                     *data_;
     std::array<GnuplotWidget *, nPlot> gpWidget_;
     std::array<Latan::Plot, nPlot>     plot_;
-    bool                               logAbs_{true};
     DataModel                          *dataModel_;
 };
 
