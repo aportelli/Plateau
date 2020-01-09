@@ -1,4 +1,7 @@
-QT       += core gui svg network printsupport
+QT += core gui svg network printsupport
+
+QMAKE_CC = /usr/bin/clang
+QMAKE_CXX = /usr/bin/clang++
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -43,16 +46,12 @@ FORMS += \
     gnuplotwidget.ui \
     mainwindow.ui
 
-# Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
-!isEmpty(target.path): INSTALLS += target
-
 RESOURCES +=
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../local/lib/release/ -lLatAnalyze
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../local/lib/debug/ -lLatAnalyze
-else:unix: LIBS += -L$$PWD/../../local/lib/ -lLatAnalyze
+DEP = dependencies/prefix
 
-INCLUDEPATH += $$PWD/../../local/include
-DEPENDPATH += $$PWD/../../local/include
+INCLUDEPATH += $$PWD/$$DEP/include
+DEPENDPATH += $$PWD/$$DEP/include
+
+LIBS += -L$$PWD/$$DEP/lib/ -lLatAnalyze
+
