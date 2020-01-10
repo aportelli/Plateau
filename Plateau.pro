@@ -1,8 +1,5 @@
 QT += core gui svg network printsupport
 
-QMAKE_CC = /usr/bin/clang
-QMAKE_CXX = /usr/bin/clang++
-
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11
@@ -55,3 +52,5 @@ DEPENDPATH += $$PWD/$$DEP/include
 
 LIBS += -L$$PWD/$$DEP/lib/ -lLatAnalyze
 
+QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.14
+QMAKE_TARGET_BUNDLE_PREFIX = org.aportelli
