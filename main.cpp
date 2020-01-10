@@ -19,6 +19,7 @@
 
 #define GPPATH "/usr/local/bin/gnuplot"
 
+#include "global.h"
 #include "mainwindow.h"
 #include "correlatordata.h"
 #include <LatAnalyze/Core/Math.hpp>
@@ -33,19 +34,7 @@ int main(int argc, char* argv[])
     mainWindow = new MainWindow;
     mainWindow->show();
 
-    try
-    {
-        app.exec();
-    }
-    catch (const std::exception &e)
-    {
-        QMessageBox messageBox;
-
-        messageBox.critical(0, "Error", e.what());
-        messageBox.setFixedSize(500, 200);
-
-        return EXIT_FAILURE;
-    }
+    CATCH_FATAL(app.exec());
 
     return EXIT_SUCCESS;
 }

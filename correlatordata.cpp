@@ -17,6 +17,7 @@
  * along with Plateau.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "global.h"
 #include "correlatordata.h"
 #include <QtCore>
 #include <LatAnalyze/Functional/CompiledFunction.hpp>
@@ -86,6 +87,7 @@ void CorrelatorData::combine(void)
 {
     const unsigned int n = sample_.size();
 
+    CATCH_WARNING(
     if ((n > 0) and !isClean())
     {
         DoubleFunction     f = compile(code_.toStdString(), n);
@@ -106,6 +108,6 @@ void CorrelatorData::combine(void)
         isClean_        = true;
         hasCombination_ = true;
         emit combinedSampleChanged();
-    }
+    })
 }
 

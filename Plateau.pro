@@ -29,6 +29,7 @@ SOURCES += \
 
 HEADERS += \
     datamodel.h \
+    global.h \
     gnuplot/QtGnuplotEvent.h \
     gnuplot/QtGnuplotInstance.h \
     gnuplot/QtGnuplotItems.h \
