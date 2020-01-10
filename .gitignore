@@ -71,6 +71,7 @@ build
 
 # dependencies
 /dependencies/prefix
+/dependencies/.latan
 
 # Binaries
 # --------
