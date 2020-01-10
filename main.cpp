@@ -33,7 +33,19 @@ int main(int argc, char* argv[])
     mainWindow = new MainWindow;
     mainWindow->show();
 
-    app.exec();
+    try
+    {
+        app.exec();
+    }
+    catch (const std::exception &e)
+    {
+        QMessageBox messageBox;
 
-    return 0;
+        messageBox.critical(0, "Error", e.what());
+        messageBox.setFixedSize(500, 200);
+
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
 }
