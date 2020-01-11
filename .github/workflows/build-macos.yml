@@ -29,9 +29,13 @@ jobs:
       run: |
         qmake Plateau.pro -spec macx-clang CONFIG+=x86_64
         make -j4
+        ls -l Plateau.app/Contents/MacOS/Plateau
     - name: Deploy Plateau
       shell: bash
       run: |
+        ls -l Plateau.app/Contents/MacOS/Plateau
+        chmod +x Plateau.app/Contents/MacOS/Plateau
+        ls -l Plateau.app/Contents/MacOS/Plateau
         macdeployqt Plateau.app -dmg -always-overwrite
     - name: Upload application
       uses: actions/upload-artifact@v1
