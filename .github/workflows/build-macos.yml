@@ -1,4 +1,4 @@
-name: CI
+name: Build macOS
 
 on: [push]
 
@@ -8,12 +8,9 @@ jobs:
     runs-on: macos-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Install LatAnalyze dependencies
+      run: brew install automake autoconf libtool bison flex
     - name: Install Qt
       uses: jurplel/install-qt-action@v2.2.1
-    - name: Run a one-line script
-      run: echo Hello, world!
-    - name: Run a multi-line script
-      run: |
-        echo Add other actions to build,
-        echo test, and deploy your project.
