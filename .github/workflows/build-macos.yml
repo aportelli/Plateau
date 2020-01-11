@@ -24,3 +24,9 @@ jobs:
       run: |
         export PATH=/usr/local/opt/flex/bin:/usr/local/opt/bison/bin:${PATH}
         ./update-latan.sh
+    - name: Build Plateau
+      shell: bash
+      run: qmake Plateau.pro -spec macx-clang CONFIG+=x86_64
+    - name: Deploy Plateau
+      shell: bash
+      run: macdeployqt Plateau.app -dmg -always-overwrite
