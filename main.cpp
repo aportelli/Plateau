@@ -17,8 +17,6 @@
  * along with Plateau.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#define GPPATH "/usr/local/bin/gnuplot"
-
 #include "global.h"
 #include "mainwindow.h"
 #include "correlatordata.h"

@@ -20,6 +20,7 @@
 #ifndef GNUPLOTWIDGET_H
 #define GNUPLOTWIDGET_H
 
+#include "global.h"
 #include "gnuplot/QtGnuplotInstance.h"
 #include "gnuplot/QtGnuplotWidget.h"
 #include <QMainWindow>
@@ -46,7 +47,7 @@ public slots:
 
 private:
     Ui::GnuplotWidget *ui_;
-    QtGnuplotInstance gp_;
+    QtGnuplotInstance *gp_;
     QtGnuplotWidget   *gpWidget_;
     QToolBar          *mouseToolBar_;
     QLabel            *mouseLabel_;

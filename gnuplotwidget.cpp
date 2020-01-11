@@ -25,17 +25,20 @@ using namespace Latan;
 GnuplotWidget::GnuplotWidget(Plot *plot, QWidget *parent) :
     QMainWindow(parent),
     ui_(new Ui::GnuplotWidget),
-    gp_(0, "/usr/local/bin/gnuplot"),
     plot_(plot)
 {
+    QString gnuplotPath = plot->getProgramPath().c_str();
+
+    gnuplotPath += "/gnuplot";
+    INFO("found gnuplot at " + gnuplotPath);
     ui_->setupUi(this);
     gpWidget_ = new QtGnuplotWidget;
     gpWidget_->setBackgroundColor(Qt::white);
     gpWidget_->setAntialias(true);
     gpWidget_->setRounded(true);
     gpWidget_->setReplotOnResize(true);
-    gp_.setWidget(gpWidget_);
-    connect(&gp_, SIGNAL(gnuplotOutput(const QString&)), this,
+    gp_ = new QtGnuplotInstance(gpWidget_, gnuplotPath);
+    connect(gp_, SIGNAL(gnuplotOutput(const QString&)), this,
             SLOT(gnuplotOutput(const QString&)));
     setCentralWidget(gpWidget_);
     mouseLabel_   = new QLabel;
@@ -48,6 +51,9 @@ GnuplotWidget::GnuplotWidget(Plot *plot, QWidget *parent) :
 GnuplotWidget::~GnuplotWidget()
 {
     delete ui_;
+    delete gp_;
+    delete gpWidget_;
+    delete mouseLabel_;
 }
 
 void GnuplotWidget::gnuplotOutput(const QString& output)
@@ -62,7 +68,7 @@ void GnuplotWidget::plot(void)
     std::ostringstream out;
 
     out << *plot_;
-    gp_ << out.str().c_str() << "\n";
+    *gp_ << out.str().c_str() << "\n";
 }
 
 void GnuplotWidget::savePdf(void)
@@ -90,10 +96,13 @@ void GnuplotWidget::savePlot(void)
         return;
     }
     plot_->save(dirname.toStdString(), false);
+    gpWidget_->exportToPdf(dirname + "/plot.pdf");
 }
 
 void GnuplotWidget::reset(void)
 {
     plot_->reset();
-    gp_ << "unset logscale\nset xrange [-1:1]\nset yrange [-1:1]\nplot 1/0 t''\n";
+    *plot_ << PlotRange(Axis::x, -1, 1) << PlotRange(Axis::y, -1, 1);
+    *plot_ << PlotCommand("1/0");
+    plot();
 }
