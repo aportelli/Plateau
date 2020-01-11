@@ -49,4 +49,8 @@ catch (const std::exception &e)\
     exit(EXIT_FAILURE);\
 }
 
+#define INFO(msg) \
+qInfo("Plateau: %14s(%p): %s", qPrintable(this->metaObject()->className()),\
+      this, qPrintable(msg))
+
 #endif // GLOBAL_H
