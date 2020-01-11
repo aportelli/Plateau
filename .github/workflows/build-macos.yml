@@ -20,4 +20,7 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v2.2.1
     - name: Build LatAnalyze & dependencies
-      run: ./update-latan.sh
+      shell: bash
+      run: |
+        export PATH=/usr/local/opt/flex/bin:/usr/local/opt/bison/bin:${PATH}
+        ./update-latan.sh
