@@ -26,7 +26,9 @@ jobs:
         ./update-latan.sh
     - name: Build Plateau
       shell: bash
-      run: qmake Plateau.pro -spec macx-clang CONFIG+=x86_64
+      run: |
+        qmake Plateau.pro -spec macx-clang CONFIG+=x86_64
+        make -j4
     - name: Deploy Plateau
       shell: bash
       run: macdeployqt Plateau.app -dmg -always-overwrite
