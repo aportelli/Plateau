@@ -37,10 +37,13 @@ public:
     bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
     void addFile(const QString filename);
+    void addFiles(const QStringList &list);
     void removeFile(const QString filename);
+    void clear(void);
     QString filepath(const int i) const;
     QString filename(const int i) const;
     CorrelatorData * data(void);
+    const QStringList & getList() const;
 private:
     QStringList    list_;
     CorrelatorData *data_;

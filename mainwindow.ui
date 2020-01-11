@@ -161,7 +161,7 @@
           <x>0</x>
           <y>0</y>
           <width>274</width>
-          <height>640</height>
+          <height>630</height>
          </rect>
         </property>
         <attribute name="label">
@@ -180,7 +180,7 @@
             <number>50</number>
            </attribute>
            <attribute name="horizontalHeaderDefaultSectionSize">
-            <number>20</number>
+            <number>50</number>
            </attribute>
            <attribute name="horizontalHeaderStretchLastSection">
             <bool>true</bool>
@@ -276,7 +276,7 @@
           <x>0</x>
           <y>0</y>
           <width>274</width>
-          <height>640</height>
+          <height>630</height>
          </rect>
         </property>
         <attribute name="label">
@@ -287,22 +287,6 @@
      </widget>
     </item>
    </layout>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1093</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menuFile">
-    <property name="title">
-     <string>File</string>
-    </property>
-   </widget>
-   <addaction name="menuFile"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
@@ -318,10 +302,32 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionNewProject"/>
+   <addaction name="actionSaveProject"/>
+   <addaction name="actionOpenProject"/>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1093</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionNewProject"/>
+    <addaction name="actionSaveProject"/>
+    <addaction name="actionOpenProject"/>
+   </widget>
+   <addaction name="menuFile"/>
   </widget>
   <action name="actionAddFile">
    <property name="text">
-    <string>Add file</string>
+    <string>Add file...</string>
    </property>
   </action>
   <action name="actionRemoveFile">
@@ -332,6 +338,30 @@
   <action name="actionCombine">
    <property name="text">
     <string>Combine data</string>
+   </property>
+  </action>
+  <action name="actionSaveProject">
+   <property name="text">
+    <string>Save project...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionOpenProject">
+   <property name="text">
+    <string>Open project...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionNewProject">
+   <property name="text">
+    <string>New project</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
    </property>
   </action>
  </widget>
@@ -433,12 +463,62 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionSaveProject</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>saveProject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>546</x>
+     <y>389</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionOpenProject</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>openProject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>546</x>
+     <y>389</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionNewProject</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>newProject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>546</x>
+     <y>389</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>status(QString)</signal>
-  <slot>open()</slot>
   <slot>addData()</slot>
   <slot>removeData()</slot>
   <slot>combineData()</slot>
+  <slot>saveProject()</slot>
+  <slot>openProject()</slot>
+  <slot>newProject()</slot>
  </slots>
 </ui>

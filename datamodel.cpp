@@ -135,6 +135,14 @@ void DataModel::addFile(const QString filename)
     }
 }
 
+void DataModel::addFiles(const QStringList &list)
+{
+    for (int i = 0; i < list.size(); ++i)
+    {
+        addFile(list.at(i));
+    }
+}
+
 void DataModel::removeFile(const QString filename)
 {
     int i = list_.indexOf(filename);
@@ -151,6 +159,14 @@ void DataModel::removeFile(const QString filename)
     }
 }
 
+void DataModel::clear(void)
+{
+    while (!list_.empty())
+    {
+        removeFile(list_.front());
+    }
+}
+
 QString DataModel::filepath(const int i) const
 {
     return data(index(i, 2)).toString();
@@ -164,4 +180,9 @@ QString DataModel::filename(const int i) const
 CorrelatorData * DataModel::data(void)
 {
     return data_;
+}
+
+const QStringList & DataModel::getList() const
+{
+    return list_;
 }

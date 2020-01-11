@@ -52,8 +52,11 @@ public:
 public slots:
     void addData(void);
     void removeData(void);
-    void replot(void);
     void combineData(void);
+    void replot(void);
+    void newProject(void);
+    void saveProject(void);
+    void openProject(void);
 
 signals:
     void status(const QString &msg);

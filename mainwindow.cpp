@@ -140,10 +140,7 @@ void MainWindow::addData(void)
 
     if (!filename.empty())
     {
-        for (int i = 0; i < filename.size(); ++i)
-        {
-            dataModel_->addFile(filename.at(i));
-        }
+        dataModel_->addFiles(filename);
         if (!combineDataChecked())
         {
             emit plotOptionsChanged();
@@ -170,6 +167,12 @@ void MainWindow::removeData(void)
     }
 }
 
+void MainWindow::combineData(void)
+{
+   data_->setFunction(ui_->combineCode->toPlainText());
+   data_->combine();
+}
+
 void MainWindow::replot(void)
 {
     for (unsigned int p = 0; p < nPlot; ++p)
@@ -178,8 +181,62 @@ void MainWindow::replot(void)
     }
 }
 
-void MainWindow::combineData(void)
+void MainWindow::newProject(void)
 {
-   data_->setFunction(ui_->combineCode->toPlainText());
-   data_->combine();
+    dataModel_->clear();
+    emit plotOptionsChanged();
+}
+
+void MainWindow::saveProject(void)
+{
+    QString fileName = QFileDialog::getSaveFileName(this,
+                                                    "Save project", "",
+                                                    "Plateau project (*.pla);;All Files (*)");
+
+    if (!fileName.isEmpty())
+    {
+        QFile file(fileName);
+
+        if (!file.open(QIODevice::WriteOnly))
+        {
+            QMessageBox::information(this, "Unable to open file",
+                                     file.errorString());
+            return;
+        }
+
+        QDataStream out(&file);
+
+        out.setVersion(QDataStream::Qt_4_5);
+        out << dataModel_->getList();
+    }
+}
+
+void MainWindow::openProject(void)
+{
+    QString fileName = QFileDialog::getOpenFileName(this,
+                                                    "Open project", "",
+                                                    "Plateau project (*.pla);;All Files (*)");
+
+    if (!fileName.isEmpty())
+    {
+        QFile file(fileName);
+
+        if (!file.open(QIODevice::ReadOnly)) {
+            QMessageBox::information(this, "Unable to open file",
+                                     file.errorString());
+            return;
+        }
+
+        QDataStream in(&file);
+        QStringList list;
+
+        in.setVersion(QDataStream::Qt_4_5);
+        in >> list;
+        dataModel_->clear();
+        dataModel_->addFiles(list);
+        if (!combineDataChecked())
+        {
+            emit plotOptionsChanged();
+        }
+    }
 }
