@@ -30,3 +30,8 @@ jobs:
     - name: Deploy Plateau
       shell: bash
       run: macdeployqt Plateau.app -dmg -always-overwrite
+    - name: Upload application
+      uses: actions/upload-artifact@v1
+      with:
+        name: Plateau.app
+        path: Plateau.app
