@@ -23,7 +23,7 @@ jobs:
       shell: bash
       run: |
         export PATH=/usr/local/opt/flex/bin:/usr/local/opt/bison/bin:${PATH}
-        ./update-latan.sh
+        MACOSX_DEPLOYMENT_TARGET=10.14 ./update-latan.sh
     - name: Build Plateau
       shell: bash
       run: |
@@ -31,9 +31,10 @@ jobs:
         make -j4
     - name: Deploy Plateau
       shell: bash
-      run: macdeployqt Plateau.app -dmg -always-overwrite
+      run: |
+        macdeployqt Plateau.app -dmg -always-overwrite
     - name: Upload application
       uses: actions/upload-artifact@v1
       with:
-        name: Plateau.app
-        path: Plateau.app
+        name: Plateau.dmg
+        path: Plateau.dmg
