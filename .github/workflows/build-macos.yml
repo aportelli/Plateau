@@ -38,7 +38,7 @@ jobs:
     - name: Deploy Plateau
       shell: bash
       run: |
-        macdeployqt Plateau.app -dmg -always-overwrite
+        macdeployqt Plateau.app -dmg -always-overwrite -verbose=2
     - name: Upload application
       uses: actions/upload-artifact@v1
       with:
