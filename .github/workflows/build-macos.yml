@@ -15,9 +15,35 @@ jobs:
       run: |
         git submodule sync --recursive
         git submodule update --init --force --recursive
+        cd dependencies/LatAnalyze
+        git rev-parse HEAD > ../.id
+        cd ../..
     - name: Install basic dependencies
       run: brew install automake autoconf libtool bison flex
     - name: Install Qt
       uses: jurplel/install-qt-action@v2.2.1
+    - name: Check cache
+      uses: actions/cache@v1
+      with:
+        path: dependencies
+        key: dependencies-${{ runner.os }}-${{ hashFiles('dependencies/.id') }}
     - name: Build LatAnalyze & dependencies
-      run: ./update-latan.sh
+      shell: bash
+      run: |
+        export PATH=/usr/local/opt/flex/bin:/usr/local/opt/bison/bin:${PATH}
+        MACOSX_DEPLOYMENT_TARGET=10.14 ./update-latan.sh
+    - name: Build Plateau
+      shell: bash
+      run: |
+        qmake Plateau.pro -spec macx-clang CONFIG+=x86_64
+        make -j4
+        ls -l Plateau.app/Contents/MacOS/Plateau
+    - name: Deploy Plateau
+      shell: bash
+      run: |
+        macdeployqt Plateau.app -dmg -always-overwrite -verbose=2
+    - name: Upload application
+      uses: actions/upload-artifact@v1
+      with:
+        name: Plateau.dmg
+        path: Plateau.dmg
