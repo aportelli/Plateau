@@ -23,12 +23,17 @@
 #include <QAbstractTableModel>
 #include "correlatordata.h"
 
+/******************************************************************************
+ *                       Model for correlator data table                      *
+ ******************************************************************************/
 class DataModel : public QAbstractTableModel
 {
     Q_OBJECT
 
 public:
+    // constructor
     DataModel(CorrelatorData *data, QObject *parent = nullptr);
+    // QAbstractTableModel subclassing
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
@@ -36,14 +41,19 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const override;
     bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
+    // add/remove files
     void addFile(const QString filename);
     void addFiles(const QStringList &list);
     void removeFile(const QString filename);
+    // clear all data
     void clear(void);
+    // get file name & path
     QString filepath(const int i) const;
     QString filename(const int i) const;
-    CorrelatorData * data(void);
+    // get file list
     const QStringList & getList() const;
+    // direct data access
+    CorrelatorData * data(void);
 private:
     QStringList    list_;
     CorrelatorData *data_;

@@ -55,3 +55,7 @@ LIBS += -L$$PWD/$$DEP/lib/ -lLatAnalyze
 
 QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.14
 QMAKE_TARGET_BUNDLE_PREFIX = org.aportelli
+
+DISTFILES += \
+    README.md \
+    update-latan.sh

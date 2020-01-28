@@ -22,6 +22,10 @@
 
 using namespace Latan;
 
+/******************************************************************************
+ *                           GnuplotWidget methods                            *
+ ******************************************************************************/
+// constructor /////////////////////////////////////////////////////////////////
 GnuplotWidget::GnuplotWidget(Plot *plot, QWidget *parent) :
     QMainWindow(parent),
     ui_(new Ui::GnuplotWidget),
@@ -48,6 +52,7 @@ GnuplotWidget::GnuplotWidget(Plot *plot, QWidget *parent) :
     reset();
 }
 
+// destructor //////////////////////////////////////////////////////////////////
 GnuplotWidget::~GnuplotWidget()
 {
     delete ui_;
@@ -56,6 +61,10 @@ GnuplotWidget::~GnuplotWidget()
     delete mouseLabel_;
 }
 
+/******************************************************************************
+ *                          GnuplotWidget slots                               *
+ ******************************************************************************/
+// send string to stdout ///////////////////////////////////////////////////////
 void GnuplotWidget::gnuplotOutput(const QString& output)
 {
     QTextStream out(stdout);
@@ -63,6 +72,7 @@ void GnuplotWidget::gnuplotOutput(const QString& output)
     out << output << endl;
 }
 
+// display plot ////////////////////////////////////////////////////////////////
 void GnuplotWidget::plot(void)
 {
     std::ostringstream out;
@@ -71,6 +81,7 @@ void GnuplotWidget::plot(void)
     *gp_ << out.str().c_str() << "\n";
 }
 
+// save PDF ////////////////////////////////////////////////////////////////////
 void GnuplotWidget::savePdf(void)
 {
     QString filename = QFileDialog::getSaveFileName(this, "Export to PDF", "",
@@ -87,6 +98,7 @@ void GnuplotWidget::savePdf(void)
     gpWidget_->exportToPdf(filename);
 }
 
+// save script & PDF ///////////////////////////////////////////////////////////
 void GnuplotWidget::savePlot(void)
 {
     QString dirname = QFileDialog::getSaveFileName(this);
@@ -99,6 +111,7 @@ void GnuplotWidget::savePlot(void)
     gpWidget_->exportToPdf(dirname + "/plot.pdf");
 }
 
+// reset plot //////////////////////////////////////////////////////////////////
 void GnuplotWidget::reset(void)
 {
     plot_->reset();

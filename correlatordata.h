@@ -23,23 +23,35 @@
 #include <QObject>
 #include <LatAnalyze/Statistics/MatSample.hpp>
 
+/******************************************************************************
+ *                      Container for loaded correlator                       *
+ ******************************************************************************/
 class CorrelatorData : public QObject
 {
     Q_OBJECT
 
 public:
+    // constructor
     explicit CorrelatorData(QObject *parent = nullptr);
-    const Latan::DMatSample & sample(const int i);
-    const Latan::DMatSample & combinedSample(void);
-    bool hasCombination(void);
-    bool isClean(void);
-    int  size(void);
+    // sample access
+    const Latan::DMatSample & sample(const int i) const;
+    const Latan::DMatSample & combinedSample(void) const;
+    // tests
+    bool hasCombination(void) const;
+    bool isDirty(void) const;
+    // size of the container
+    int size(void)const;
 
 public slots:
+    // load new file, insert at position i
     void load(const int i, const QString filename);
+    // unload file at position i
     void unload(const int i);
+    // set combination function code
     void setFunction(const QString code);
+    // mark combination to be recomputed
     void markDirty(void);
+    // perform combination
     void combine(void);
 
 signals:
@@ -47,7 +59,7 @@ signals:
     void combinedSampleChanged(void);
 
 private:
-    bool                     isClean_, hasCombination_{false};
+    bool                     isDirty_, hasCombination_{false};
     QList<Latan::DMatSample> sample_;
     Latan::DMatSample        combined_;
     QString                  code_;

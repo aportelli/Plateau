@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 git submodule update --remote
 INITDIR=$(pwd)
 cd dependencies/LatAnalyze/ci-scripts

@@ -25,37 +25,48 @@
 
 using namespace Latan;
 
+/******************************************************************************
+ *                        CorrelatorData methods                              *
+ ******************************************************************************/
+// constructor /////////////////////////////////////////////////////////////////
 CorrelatorData::CorrelatorData(QObject *parent) : QObject(parent)
 {
     markDirty();
     connect(this, SIGNAL(dataChanged()), this, SLOT(markDirty()));
 }
 
-const Latan::DMatSample & CorrelatorData::sample(const int i)
+// sample access ///////////////////////////////////////////////////////////////
+const Latan::DMatSample & CorrelatorData::sample(const int i) const
 {
     return sample_.at(i);
 }
 
-const Latan::DMatSample & CorrelatorData::combinedSample(void)
+const Latan::DMatSample & CorrelatorData::combinedSample(void) const
 {
     return combined_;
 }
 
-bool CorrelatorData::hasCombination(void)
+// tests ///////////////////////////////////////////////////////////////////////
+bool CorrelatorData::hasCombination(void) const
 {
     return hasCombination_;
 }
 
-bool CorrelatorData::isClean(void)
+bool CorrelatorData::isDirty(void) const
 {
-    return isClean_;
+    return isDirty_;
 }
 
-int CorrelatorData::size(void)
+// size of the container ///////////////////////////////////////////////////////
+int CorrelatorData::size(void) const
 {
     return sample_.size();
 }
 
+/******************************************************************************
+ *                            CorrelatorData slots                            *
+ ******************************************************************************/
+// load new file, insert at position i /////////////////////////////////////////
 void CorrelatorData::load(const int i, const QString filename)
 { 
     Index nt;
@@ -66,29 +77,33 @@ void CorrelatorData::load(const int i, const QString filename)
     emit dataChanged();
 }
 
+// unload file at position i ///////////////////////////////////////////////////
 void CorrelatorData::unload(const int i)
 {
     sample_.removeAt(i);
     emit dataChanged();
 }
 
+// set combination function code ///////////////////////////////////////////////
 void CorrelatorData::setFunction(const QString code)
 {
     code_  = code;
     emit dataChanged();
 }
 
+// mark combination to be recomputed ///////////////////////////////////////////
 void CorrelatorData::markDirty(void)
 {
-    isClean_ = false;
+    isDirty_ = true;
 }
 
+// perform combination /////////////////////////////////////////////////////////
 void CorrelatorData::combine(void)
 {
     const unsigned int n = sample_.size();
 
     CATCH_WARNING(
-    if ((n > 0) and !isClean())
+    if ((n > 0) and isDirty())
     {
         DoubleFunction     f = compile(code_.toStdString(), n);
         DVec               buf(n);
@@ -105,7 +120,7 @@ void CorrelatorData::combine(void)
                 combined_[s](i, j) = f(buf);
             }
         }
-        isClean_        = true;
+        isDirty_        = false;
         hasCombination_ = true;
         emit combinedSampleChanged();
     })

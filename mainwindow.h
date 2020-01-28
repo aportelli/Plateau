@@ -25,6 +25,9 @@
 #include "datamodel.h"
 #include "gnuplotwidget.h"
 
+/******************************************************************************
+ *                          Main application window                           *
+ ******************************************************************************/
 namespace Ui {
     class MainWindow;
 }
@@ -42,18 +45,27 @@ public:
     static constexpr unsigned int nPlot = 2;
 
 public:
+    // constructor/destructor
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow(void);
+    // access
     GnuplotWidget * gnuplotWidget(const PlotType p);
+    // replot specific plot
     void replot(const PlotType p);
-    bool logAbsChecked(void);
-    bool combineDataChecked(void);
+    // get checkboxes status
+    bool logAbsChecked(void) const;
+    bool combineDataChecked(void) const;
 
 public slots:
+    // add data dialog
     void addData(void);
+    // remove selected data
     void removeData(void);
+    // combine data
     void combineData(void);
+    // refresh all plots
     void replot(void);
+    // project management
     void newProject(void);
     void saveProject(void);
     void openProject(void);
@@ -63,6 +75,7 @@ signals:
     void plotOptionsChanged(void);
 
 private:
+    // plot a single correlator
     void plotCorr(Latan::Plot &p, const Latan::DVec &t,
                   const Latan::DMatSample &c, const QString name);
 

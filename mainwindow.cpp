@@ -23,6 +23,10 @@
 
 using namespace Latan;
 
+/******************************************************************************
+ *                              MainWindow methods                            *
+ ******************************************************************************/
+// constructor /////////////////////////////////////////////////////////////////
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui_(new Ui::MainWindow),
@@ -50,6 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui_->combineButton->setVisible(combineDataChecked());
 }
 
+// destructor //////////////////////////////////////////////////////////////////
 MainWindow::~MainWindow(void)
 {
     delete ui_;
@@ -61,11 +66,13 @@ MainWindow::~MainWindow(void)
     }
 }
 
+// access //////////////////////////////////////////////////////////////////////
 GnuplotWidget * MainWindow::gnuplotWidget(const PlotType p)
 {
     return gpWidget_[p];
 }
 
+// plot a single correlator ////////////////////////////////////////////////////
 void MainWindow::plotCorr(Plot &p, const DVec &t, const DMatSample &c,
                           const QString name)
 {
@@ -82,6 +89,7 @@ void MainWindow::plotCorr(Plot &p, const DVec &t, const DMatSample &c,
     p << Title(name.toStdString()) << PlotData(t, tmp);
 }
 
+// replot specific plot ////////////////////////////////////////////////////////
 void MainWindow::replot(const PlotType p)
 {
     if (data_->size() > 0)
@@ -122,16 +130,21 @@ void MainWindow::replot(const PlotType p)
     }
 }
 
-bool MainWindow::logAbsChecked(void)
+// get checkboxes status ///////////////////////////////////////////////////////
+bool MainWindow::logAbsChecked(void) const
 {
     return (ui_->logAbsCheckBox->checkState() == Qt::CheckState::Checked);
 }
 
-bool MainWindow::combineDataChecked(void)
+bool MainWindow::combineDataChecked(void) const
 {
     return (ui_->combineCheckBox->checkState() == Qt::CheckState::Checked);
 }
 
+/******************************************************************************
+ *                              MainWindow slots                              *
+ ******************************************************************************/
+// add data dialog /////////////////////////////////////////////////////////////
 void MainWindow::addData(void)
 {
     QStringList filename = QFileDialog::getOpenFileNames(this, "Add files",
@@ -148,6 +161,7 @@ void MainWindow::addData(void)
     }
 }
 
+// remove selected data ////////////////////////////////////////////////////////
 void MainWindow::removeData(void)
 {
     QModelIndexList l = ui_->dataTableView->selectionModel()->selectedIndexes();
@@ -167,12 +181,14 @@ void MainWindow::removeData(void)
     }
 }
 
+// combine data ////////////////////////////////////////////////////////////////
 void MainWindow::combineData(void)
 {
    data_->setFunction(ui_->combineCode->toPlainText());
    data_->combine();
 }
 
+// refresh all plots ///////////////////////////////////////////////////////////
 void MainWindow::replot(void)
 {
     for (unsigned int p = 0; p < nPlot; ++p)
@@ -181,6 +197,7 @@ void MainWindow::replot(void)
     }
 }
 
+// project management //////////////////////////////////////////////////////////
 void MainWindow::newProject(void)
 {
     dataModel_->clear();

@@ -21,11 +21,16 @@
 #include <QFileInfo>
 #include <QDebug>
 
+/******************************************************************************
+ *                           DataModel methods                                *
+ ******************************************************************************/
+// constructor /////////////////////////////////////////////////////////////////
 DataModel::DataModel(CorrelatorData *data, QObject *parent)
     : QAbstractTableModel(parent)
     , data_(data)
 {}
 
+// QAbstractTableModel subclassing /////////////////////////////////////////////
 int DataModel::rowCount(const QModelIndex &) const
 {
     return list_.size();
@@ -114,6 +119,7 @@ bool DataModel::removeRows(int row, int count, const QModelIndex &parent)
     return true;
 }
 
+// add/remove files ////////////////////////////////////////////////////////////
 void DataModel::addFile(const QString filename)
 {
     int i = list_.indexOf(filename);
@@ -159,6 +165,7 @@ void DataModel::removeFile(const QString filename)
     }
 }
 
+// clear all data //////////////////////////////////////////////////////////////
 void DataModel::clear(void)
 {
     while (!list_.empty())
@@ -167,6 +174,7 @@ void DataModel::clear(void)
     }
 }
 
+// get file name & path ////////////////////////////////////////////////////////
 QString DataModel::filepath(const int i) const
 {
     return data(index(i, 2)).toString();
@@ -177,12 +185,14 @@ QString DataModel::filename(const int i) const
     return data(index(i, 1)).toString();
 }
 
-CorrelatorData * DataModel::data(void)
-{
-    return data_;
-}
-
+// get file list ///////////////////////////////////////////////////////////////
 const QStringList & DataModel::getList() const
 {
     return list_;
+}
+
+// direct data access //////////////////////////////////////////////////////////
+CorrelatorData * DataModel::data(void)
+{
+    return data_;
 }

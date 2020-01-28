@@ -26,6 +26,9 @@
 #include <QMainWindow>
 #include <LatAnalyze/Core/Plot.hpp>
 
+/******************************************************************************
+ *                             Gnuplot widget                                 *
+ ******************************************************************************/
 namespace Ui {
 class GnuplotWidget;
 }
@@ -35,14 +38,20 @@ class GnuplotWidget : public QMainWindow
     Q_OBJECT
 
 public:
+    // constructor/destructor
     explicit GnuplotWidget(Latan::Plot *plot, QWidget *parent = nullptr);
     ~GnuplotWidget();
 
 public slots:
+    // send string to stdout
     void gnuplotOutput(const QString& output);
+    // display plot
     void plot(void);
+    // save PDF
     void savePdf(void);
+    // save script & PDF
     void savePlot(void);
+    // reset plot
     void reset(void);
 
 private:
