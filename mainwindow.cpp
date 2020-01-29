@@ -34,6 +34,10 @@ MainWindow::MainWindow(QWidget *parent) :
     dataModel_(new DataModel(data_, this))
 
 {
+    for (unsigned int p = 0; p < nPlot; ++p)
+    {
+        gpWidget_[p] = new GnuplotWidget(&plot_[p], this);
+    }
     ui_->setupUi(this);
     connect(data_, SIGNAL(combinedSampleChanged()), this, SLOT(replot()));
     connect(ui_->logAbsCheckBox, SIGNAL(stateChanged(int)),
@@ -43,10 +47,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui_->emTypeComboBox, SIGNAL(currentIndexChanged(int)),
             this, SIGNAL(plotOptionsChanged()));
     connect(this, SIGNAL(plotOptionsChanged()), this, SLOT(replot()));
-    for (unsigned int p = 0; p < nPlot; ++p)
-    {
-        gpWidget_[p] = new GnuplotWidget(&plot_[p], this);
-    }
     ui_->corrPlotLayout->addWidget(gpWidget_[PlotType::corr]);
     ui_->emPlotLayout->addWidget(gpWidget_[PlotType::em]);
     ui_->dataTableView->setModel(dataModel_);
@@ -242,12 +242,21 @@ void MainWindow::combineData(void)
    data_->combine();
 }
 
-// refresh all plots ///////////////////////////////////////////////////////////
+// redo all plots //////////////////////////////////////////////////////////////
 void MainWindow::replot(void)
 {
     for (unsigned int p = 0; p < nPlot; ++p)
     {
         replot(static_cast<PlotType>(p));
+    }
+}
+
+// refresh all plots (does not actually redo the plots) ////////////////////////
+void MainWindow::refreshPlots(void)
+{
+    for (unsigned int p = 0; p < nPlot; ++p)
+    {
+        gnuplotWidget(static_cast<PlotType>(p))->refresh();
     }
 }
 

@@ -65,8 +65,10 @@ public slots:
     void removeData(void);
     // combine data
     void combineData(void);
-    // refresh all plots
+    // redo all plots
     void replot(void);
+    // refresh all plots (does not actually redo the plots)
+    void refreshPlots(void);
     // project management
     void newProject(void);
     void saveProject(void);

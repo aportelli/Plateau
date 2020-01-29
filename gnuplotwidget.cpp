@@ -41,6 +41,7 @@ GnuplotWidget::GnuplotWidget(Plot *plot, QWidget *parent) :
     gpWidget_->setAntialias(true);
     gpWidget_->setRounded(true);
     gpWidget_->setReplotOnResize(true);
+    gpWidget_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     gp_ = new QtGnuplotInstance(gpWidget_, gnuplotPath);
     connect(gp_, SIGNAL(gnuplotOutput(const QString&)), this,
             SLOT(gnuplotOutput(const QString&)));
@@ -79,6 +80,21 @@ void GnuplotWidget::plot(void)
 
     out << *plot_;
     *gp_ << out.str().c_str() << "\n";
+}
+
+// refresh plot
+void GnuplotWidget::refresh(void)
+{
+    // QtGnuplotWidget behave weirdly when being resized
+    // so we adjust the size, remove 1px in each direction and resize again
+    // to force an actual resize
+    gpWidget_->adjustSize();
+
+    QSize currentSize = size(),
+          tmpSize(currentSize.width() - 1, currentSize.height() - 1);
+
+    gpWidget_->resize(tmpSize);
+    gpWidget_->resize(currentSize);
 }
 
 // save PDF ////////////////////////////////////////////////////////////////////

@@ -47,6 +47,8 @@ public slots:
     void gnuplotOutput(const QString& output);
     // display plot
     void plot(void);
+    // refresh plot
+    void refresh(void);
     // save PDF
     void savePdf(void);
     // save script & PDF

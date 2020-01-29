@@ -37,6 +37,12 @@
         <layout class="QVBoxLayout" name="verticalLayout1">
          <item>
           <widget class="QWidget" name="corrPlot" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <layout class="QHBoxLayout" name="corrPlotLayout">
             <property name="spacing">
              <number>0</number>
@@ -92,6 +98,12 @@
         <layout class="QVBoxLayout" name="verticalLayout2">
          <item>
           <widget class="QWidget" name="emPlot" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <layout class="QHBoxLayout" name="emPlotLayout">
             <property name="spacing">
              <number>0</number>
@@ -533,6 +545,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>tabWidget</sender>
+   <signal>currentChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>refreshPlots()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>407</x>
+     <y>402</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>546</x>
+     <y>389</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>status(QString)</signal>
@@ -542,5 +570,6 @@
   <slot>saveProject()</slot>
   <slot>openProject()</slot>
   <slot>newProject()</slot>
+  <slot>refreshPlots()</slot>
  </slots>
 </ui>
