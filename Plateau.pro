@@ -48,10 +48,11 @@ RESOURCES +=
 
 DEP = dependencies/prefix
 
-INCLUDEPATH += $$PWD/$$DEP/include
 DEPENDPATH += $$PWD/$$DEP/include
+DEPENDPATH += $$PWD/$$DEP/lib
+LIBS       += -L$$PWD/$$DEP/lib/ -lLatAnalyze
 
-LIBS += -L$$PWD/$$DEP/lib/ -lLatAnalyze
+QMAKE_CXXFLAGS += $$system("$$PWD/$$DEP/bin/latan-config --cxxflags")
 
 QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.14
 QMAKE_TARGET_BUNDLE_PREFIX = org.aportelli
