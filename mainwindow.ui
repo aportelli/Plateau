@@ -114,15 +114,37 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_2">
            <item>
-            <widget class="QComboBox" name="comboBox">
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>Correlator type:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="emTypeComboBox">
              <item>
               <property name="text">
-               <string>log</string>
+               <string>exp</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>acosh</string>
+               <string>cosh</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>sinh</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>linear</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>cst</string>
               </property>
              </item>
             </widget>

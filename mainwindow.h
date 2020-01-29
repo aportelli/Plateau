@@ -24,6 +24,7 @@
 #include "correlatordata.h"
 #include "datamodel.h"
 #include "gnuplotwidget.h"
+#include <LatAnalyze/Physics/EffectiveMass.hpp>
 
 /******************************************************************************
  *                          Main application window                           *
@@ -55,7 +56,8 @@ public:
     // get checkboxes status
     bool logAbsChecked(void) const;
     bool combineDataChecked(void) const;
-
+    // get em type
+    Latan::CorrelatorType getEmType(void) const;
 public slots:
     // add data dialog
     void addData(void);
@@ -78,6 +80,9 @@ private:
     // plot a single correlator
     void plotCorr(Latan::Plot &p, const Latan::DVec &t,
                   const Latan::DMatSample &c, const QString name);
+    // plot a single effective mass
+    void plotEm(Latan::Plot &p, const Latan::EffectiveMass &em,
+                const Latan::DMatSample &c, const QString name);
 
 private:
     Ui::MainWindow                     *ui_;

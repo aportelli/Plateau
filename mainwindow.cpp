@@ -36,8 +36,12 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui_->setupUi(this);
     connect(data_, SIGNAL(combinedSampleChanged()), this, SLOT(replot()));
-    connect(ui_->logAbsCheckBox, SIGNAL(stateChanged(int)), this, SIGNAL(plotOptionsChanged()));
-    connect(ui_->combineCheckBox, SIGNAL(stateChanged(int)), this, SIGNAL(plotOptionsChanged()));
+    connect(ui_->logAbsCheckBox, SIGNAL(stateChanged(int)),
+            this, SIGNAL(plotOptionsChanged()));
+    connect(ui_->combineCheckBox, SIGNAL(stateChanged(int)),
+            this, SIGNAL(plotOptionsChanged()));
+    connect(ui_->emTypeComboBox, SIGNAL(currentIndexChanged(int)),
+            this, SIGNAL(plotOptionsChanged()));
     connect(this, SIGNAL(plotOptionsChanged()), this, SLOT(replot()));
     for (unsigned int p = 0; p < nPlot; ++p)
     {
@@ -89,6 +93,17 @@ void MainWindow::plotCorr(Plot &p, const DVec &t, const DMatSample &c,
     p << Title(name.toStdString()) << PlotData(t, tmp);
 }
 
+// plot a single effective mass ////////////////////////////////////////////////
+void MainWindow::plotEm(Latan::Plot &p, const Latan::EffectiveMass &em,
+                        const Latan::DMatSample &c, const QString name)
+{
+    Index      nt = c[central].rows();
+    DVec       t = em.getTime(nt);
+    DMatSample tmp = em(c);
+
+    p << Title(name.toStdString()) << PlotData(t, tmp);
+}
+
 // replot specific plot ////////////////////////////////////////////////////////
 void MainWindow::replot(const PlotType p)
 {
@@ -118,10 +133,27 @@ void MainWindow::replot(const PlotType p)
             plot_[p] << PlotRange(Axis::x, 0, nt);
             gnuplotWidget(p)->plot();
         }
+        break;
         case PlotType::em:
         {
+            EffectiveMass em(getEmType());
 
+            if (combineDataChecked() and data_->hasCombination())
+            {
+                plotEm(plot_[p], em, data_->combinedSample(), "combined data");
+            }
+            else
+            {
+                for (int i = 0; i < data_->size(); ++i)
+                {
+                    plotEm(plot_[p], em, data_->sample(i),
+                           dataModel_->filename(i));
+                }
+            }
+            plot_[p] << PlotRange(Axis::x, 0, nt);
+            gnuplotWidget(p)->plot();
         }
+        break;
         }
     }
     else
@@ -140,6 +172,28 @@ bool MainWindow::combineDataChecked(void) const
 {
     return (ui_->combineCheckBox->checkState() == Qt::CheckState::Checked);
 }
+
+// get em type /////////////////////////////////////////////////////////////////
+#define IF_TYPE(t) \
+if (selected == #t) {type = CorrelatorType::t;}
+#define ELIF_TYPE(t) else IF_TYPE(t)
+
+CorrelatorType MainWindow::getEmType(void) const
+{
+    QString        selected = ui_->emTypeComboBox->currentText();
+    CorrelatorType type = CorrelatorType::undefined;
+
+    IF_TYPE(exp)
+    ELIF_TYPE(cosh)
+    ELIF_TYPE(sinh)
+    ELIF_TYPE(linear)
+    ELIF_TYPE(cst)
+
+    return type;
+}
+
+#undef IF_TYPE
+#undef ELIF_TYPE
 
 /******************************************************************************
  *                              MainWindow slots                              *
