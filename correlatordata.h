@@ -41,18 +41,24 @@ public:
     bool isDirty(void) const;
     // size of the container
     int size(void)const;
-
-public slots:
     // load new file, insert at position i
     void load(const int i, const QString filename);
     // unload file at position i
     void unload(const int i);
     // set combination function code
     void setFunction(const QString code);
-    // mark combination to be recomputed
-    void markDirty(void);
+    // time shift
+    void shift(const int i, const int ts);
+    // time fold
+    void fold(const int i);
+    // Fourier transform
+    void fourierTransform(const int i);
     // perform combination
     void combine(void);
+
+public slots:
+    // mark combination to be recomputed
+    void markDirty(void);
 
 signals:
     void dataChanged(void);

@@ -22,6 +22,8 @@
 #include <QtCore>
 #include <LatAnalyze/Functional/CompiledFunction.hpp>
 #include <LatAnalyze/Io/Io.hpp>
+#include <LatAnalyze/Numerical/GslFFT.hpp>
+#include <LatAnalyze/Physics/CorrelatorFitter.hpp>
 
 using namespace Latan;
 
@@ -63,15 +65,16 @@ int CorrelatorData::size(void) const
     return sample_.size();
 }
 
-/******************************************************************************
- *                            CorrelatorData slots                            *
- ******************************************************************************/
 // load new file, insert at position i /////////////////////////////////////////
 void CorrelatorData::load(const int i, const QString filename)
 { 
     Index nt;
 
-    sample_.insert(i, Io::load<DMatSample>(filename.toStdString()));
+    if (i >= sample_.size())
+    {
+        sample_.insert(i, DMatSample());
+    }
+    sample_[i] = Io::load<DMatSample>(filename.toStdString());
     nt         = sample_[i][central].rows();
     sample_[i] = sample_[i].block(0, 0, nt, 1);
     emit dataChanged();
@@ -91,10 +94,26 @@ void CorrelatorData::setFunction(const QString code)
     emit dataChanged();
 }
 
-// mark combination to be recomputed ///////////////////////////////////////////
-void CorrelatorData::markDirty(void)
+// time shift ///////////////////////////////////////////////////////?//////////
+void CorrelatorData::shift(const int i, const int ts)
 {
-    isDirty_ = true;
+    sample_[i] = CorrelatorUtils::shift(sample(i), ts);
+}
+
+// time fold ///////////////////////////////////////////////////////////////////
+void CorrelatorData::fold(const int i)
+{
+    sample_[i] = CorrelatorUtils::fold(sample(i));
+}
+
+// Fourier transform ///////////////////////////////////////////////////////////
+void CorrelatorData::fourierTransform(const int i)
+{
+    const Index nt = sample(i)[central].rows();
+    GslFFT      fft(nt);
+
+    sample_[i] = CorrelatorUtils::fourierTransform(sample(i), fft);
+    sample_[i] = sample_[i].block(0, 0, nt, 1);
 }
 
 // perform combination /////////////////////////////////////////////////////////
@@ -126,3 +145,11 @@ void CorrelatorData::combine(void)
     })
 }
 
+/******************************************************************************
+ *                            CorrelatorData slots                            *
+ ******************************************************************************/
+// mark combination to be recomputed ///////////////////////////////////////////
+void CorrelatorData::markDirty(void)
+{
+    isDirty_ = true;
+}

@@ -101,7 +101,7 @@ void GnuplotWidget::refresh(void)
 void GnuplotWidget::savePdf(void)
 {
     QString filename = QFileDialog::getSaveFileName(this, "Export to PDF", "",
-                                                    "PDF files (*.pdf)");
+                                                    "PDF files (*.pdf);;All Files (*)");
 
     if (filename.isEmpty())
     {

@@ -2,7 +2,7 @@
 
 set -e
 
-git submodule update --remote
+git submodule update --remote || echo "warning: LatAnalyze git update failed" 1>&2
 INITDIR=$(pwd)
 cd dependencies/LatAnalyze/ci-scripts
 if [ "$(cat ${INITDIR}/dependencies/.latan 2>/dev/null)" != "$(git rev-parse HEAD)" ]; then

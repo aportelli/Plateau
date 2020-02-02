@@ -61,6 +61,8 @@ public:
 public slots:
     // add data dialog
     void addData(void);
+    // edit data dialog
+    void editData(void);
     // remove selected data
     void removeData(void);
     // combine data

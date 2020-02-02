@@ -20,6 +20,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "gnuplotwidget.h"
+#include "dataoptiondialog.h"
 
 using namespace Latan;
 
@@ -52,6 +53,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui_->dataTableView->setModel(dataModel_);
     ui_->dataTableView->hideColumn(2);
     ui_->addDataButton->setDefaultAction(ui_->actionAddFile);
+    ui_->editDataButton->setDefaultAction(ui_->actionEditData);
     ui_->removeDataButton->setDefaultAction(ui_->actionRemoveFile);
     ui_->combineButton->setDefaultAction(ui_->actionCombine);
     ui_->combineCode->setVisible(combineDataChecked());
@@ -127,7 +129,7 @@ void MainWindow::replot(const PlotType p)
                 for (int i = 0; i < data_->size(); ++i)
                 {
                     plotCorr(plot_[p], t, data_->sample(i),
-                             dataModel_->filename(i));
+                             dataModel_->getFilename(i));
                 }
             }
             plot_[p] << PlotRange(Axis::x, 0, nt);
@@ -147,7 +149,7 @@ void MainWindow::replot(const PlotType p)
                 for (int i = 0; i < data_->size(); ++i)
                 {
                     plotEm(plot_[p], em, data_->sample(i),
-                           dataModel_->filename(i));
+                           dataModel_->getFilename(i));
                 }
             }
             plot_[p] << PlotRange(Axis::x, 0, nt);
@@ -203,7 +205,7 @@ void MainWindow::addData(void)
 {
     QStringList filename = QFileDialog::getOpenFileNames(this, "Add files",
                                                          QDir::homePath(),
-                                                         "LatAnalyze sample (*.h5 *.dat)");
+                                                         "LatAnalyze sample (*.h5 *.dat);;All Files (*)");
 
     if (!filename.empty())
     {
@@ -211,6 +213,41 @@ void MainWindow::addData(void)
         if (!combineDataChecked())
         {
             emit plotOptionsChanged();
+        }
+    }
+}
+
+// edit data dialog ////////////////////////////////////////////////////////////
+void MainWindow::editData(void)
+{
+    QModelIndexList l = ui_->dataTableView->selectionModel()->selectedIndexes();
+
+    if (l.size() == 1)
+    {
+        DataOptionDialog::Option opt;
+        QString                  filename;
+
+        filename     = dataModel_->getFilepath(l.first().row());
+        opt.filename = filename;
+        opt.tr       = dataModel_->getTransform(l.first().row());
+        opt          = DataOptionDialog::getDataOption(opt, this);
+        if (opt.accepted)
+        {
+            if (QFile::exists(opt.filename))
+            {
+                dataModel_->editFile(filename, opt.filename, opt.tr);
+                if (!combineDataChecked())
+                {
+                    emit plotOptionsChanged();
+                }
+            }
+            else
+            {
+                QMessageBox msgBox;
+
+                msgBox.warning(this, "Error",
+                               "file '" + filename + "' does not exists");
+            }
         }
     }
 }
@@ -223,7 +260,7 @@ void MainWindow::removeData(void)
 
     for (int i = 0; i < l.size(); ++i)
     {
-        toRemove.append(dataModel_->filepath(l.at(i).row()));
+        toRemove.append(dataModel_->getFilepath(l.at(i).row()));
     }
     for (int j = 0; j < toRemove.size(); ++j)
     {

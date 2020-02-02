@@ -17,6 +17,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     datamodel.cpp \
+    dataoptiondialog.cpp \
     gnuplot/QtGnuplotEvent.cpp \
     gnuplot/QtGnuplotInstance.cpp \
     gnuplot/QtGnuplotItems.cpp \
@@ -29,6 +30,7 @@ SOURCES += \
 
 HEADERS += \
     datamodel.h \
+    dataoptiondialog.h \
     global.h \
     gnuplot/QtGnuplotEvent.h \
     gnuplot/QtGnuplotInstance.h \
@@ -41,18 +43,23 @@ HEADERS += \
     mainwindow.h
 
 FORMS += \
+    dataoptiondialog.ui \
     gnuplotwidget.ui \
     mainwindow.ui
 
 RESOURCES +=
 
-DEP = dependencies/prefix
+defined(LATAN_PREFIX, var) {
+    DEP = $$LATAN_PREFIX
+} else {
+    DEP = $$PWD/dependencies/prefix
+}
 
-DEPENDPATH += $$PWD/$$DEP/include
-DEPENDPATH += $$PWD/$$DEP/lib
-LIBS       += -L$$PWD/$$DEP/lib/ -lLatAnalyze
+DEPENDPATH += $$DEP/include
+DEPENDPATH += $$DEP/lib
+LIBS       += -L$$DEP/lib/ -lLatAnalyze
 
-QMAKE_CXXFLAGS += $$system("$$PWD/$$DEP/bin/latan-config --cxxflags")
+QMAKE_CXXFLAGS += $$system("$$DEP/bin/latan-config --cxxflags") -I$$DEP/include
 
 QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.14
 QMAKE_TARGET_BUNDLE_PREFIX = org.aportelli

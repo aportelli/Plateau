@@ -31,6 +31,13 @@ class DataModel : public QAbstractTableModel
     Q_OBJECT
 
 public:
+    struct Transform
+    {
+        bool         fold, ft;
+        unsigned int shift;
+    };
+
+public:
     // constructor
     DataModel(CorrelatorData *data, QObject *parent = nullptr);
     // QAbstractTableModel subclassing
@@ -42,21 +49,36 @@ public:
     bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
     // add/remove files
-    void addFile(const QString filename);
+    void addFile(const QString getFilename, const Transform tr = defaultTransform);
     void addFiles(const QStringList &list);
-    void removeFile(const QString filename);
+    void editFile(const QString getFilename, const QString newFilename,
+                  const Transform tr = defaultTransform);
+    void removeFile(const QString getFilename);
+    // transform correlator
+    void transform(const QString getFilename, const Transform tr);
     // clear all data
     void clear(void);
     // get file name & path
-    QString filepath(const int i) const;
-    QString filename(const int i) const;
+    QString   getFilepath(const int i) const;
+    QString   getFilename(const int i) const;
+    // get transform
+    Transform getTransform(const int i) const;
     // get file list
     const QStringList & getList() const;
     // direct data access
     CorrelatorData * data(void);
+
+public:
+    static constexpr Transform  defaultTransform = {false, false, 0};
+
 private:
-    QStringList    list_;
-    CorrelatorData *data_;
+    QStringList             fileList_;
+    QList<Transform>        trList_;
+    CorrelatorData          *data_;
 };
+
+// transform compare
+bool operator==(const DataModel::Transform a, const DataModel::Transform b);
+bool operator!=(const DataModel::Transform a, const DataModel::Transform b);
 
 #endif // DATAMODEL_H
