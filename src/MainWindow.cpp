@@ -17,11 +17,11 @@
  * along with Plateau.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
-#include <src/global.h>
-#include <src/data/dataoptiondialog.h>
-#include <src/gnuplot/gnuplotwidget.h>
+#include "MainWindow.h"
+#include "ui_MainWindow.h"
+#include <src/Global.h>
+#include <src/data/DataOptionDialog.h>
+#include <src/gnuplot/GnuplotWidget.h>
 
 using namespace Latan;
 

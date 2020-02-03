@@ -17,9 +17,9 @@
  * along with Plateau.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "dataoptiondialog.h"
-#include "ui_dataoptiondialog.h"
-#include <src/global.h>
+#include "DataOptionDialog.h"
+#include "ui_DataOptionDialog.h"
+#include <src/Global.h>
 #include <QFileDialog>
 
 DataOptionDialog::DataOptionDialog(Option opt, QWidget *parent) :

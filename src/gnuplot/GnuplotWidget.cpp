@@ -17,9 +17,9 @@
  * along with Plateau.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "gnuplotwidget.h"
-#include "ui_gnuplotwidget.h"
-#include <src/global.h>
+#include "GnuplotWidget.h"
+#include "ui_GnuplotWidget.h"
+#include <src/Global.h>
 
 using namespace Latan;
 

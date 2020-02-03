@@ -22,7 +22,7 @@
 
 #include <QMainWindow>
 #include <LatAnalyze/Core/Plot.hpp>
-#include <src/global.h>
+#include <src/Global.h>
 #include <src/gnuplot/QtGnuplotInstance.h>
 #include <src/gnuplot/QtGnuplotWidget.h>
 

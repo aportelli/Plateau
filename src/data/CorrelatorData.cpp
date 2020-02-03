@@ -17,8 +17,8 @@
  * along with Plateau.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "correlatordata.h"
-#include <src/global.h>
+#include "CorrelatorData.h"
+#include <src/Global.h>
 #include <QtCore>
 #include <LatAnalyze/Functional/CompiledFunction.hpp>
 #include <LatAnalyze/Io/Io.hpp>

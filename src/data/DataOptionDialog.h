@@ -21,7 +21,7 @@
 #define DATAOPTIONDIALOG_H
 
 #include <QDialog>
-#include <src/data/datatablemodel.h>
+#include <src/data/DataTableModel.h>
 
 namespace Ui {
 class DataOptionDialog;

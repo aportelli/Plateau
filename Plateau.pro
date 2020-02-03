@@ -5,36 +5,36 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG += c++11 silent
 
 SOURCES += \
+    src/MainWindow.cpp \
+    src/data/CorrelatorData.cpp \
+    src/data/DataOptionDialog.cpp \
+    src/data/DataTableModel.cpp \
+    src/gnuplot/GnuplotWidget.cpp \
     src/main.cpp \
-    src/mainwindow.cpp \
-    src/data/correlatordata.cpp \
-    src/data/dataoptiondialog.cpp \
-    src/data/datatablemodel.cpp \
     src/gnuplot/QtGnuplotEvent.cpp \
     src/gnuplot/QtGnuplotInstance.cpp \
     src/gnuplot/QtGnuplotItems.cpp \
     src/gnuplot/QtGnuplotScene.cpp \
-    src/gnuplot/QtGnuplotWidget.cpp \
-    src/gnuplot/gnuplotwidget.cpp
+    src/gnuplot/QtGnuplotWidget.cpp
 
 HEADERS += \
-    src/global.h \
-    src/mainwindow.h \
-    src/data/correlatordata.h \
-    src/data/dataoptiondialog.h \
-    src/data/datatablemodel.h \
+    src/Global.h \
+    src/MainWindow.h \
+    src/data/CorrelatorData.h \
+    src/data/DataOptionDialog.h \
+    src/data/DataTableModel.h \
+    src/gnuplot/GnuplotWidget.h \
     src/gnuplot/QtGnuplotEvent.h \
     src/gnuplot/QtGnuplotInstance.h \
     src/gnuplot/QtGnuplotItems.h \
     src/gnuplot/QtGnuplotScene.h \
     src/gnuplot/QtGnuplotWidget.h \
-    src/gnuplot/mousecmn.h \
-    src/gnuplot/gnuplotwidget.h
+    src/gnuplot/mousecmn.h
 
 FORMS += \
-    src/data/dataoptiondialog.ui \
-    src/gnuplot/gnuplotwidget.ui \
-    src/mainwindow.ui
+    src/MainWindow.ui \
+    src/data/DataOptionDialog.ui \
+    src/gnuplot/GnuplotWidget.ui
 
 RESOURCES +=
 

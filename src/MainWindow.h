@@ -22,9 +22,9 @@
 
 #include <QMainWindow>
 #include <LatAnalyze/Physics/EffectiveMass.hpp>
-#include <src/data/correlatordata.h>
-#include <src/data/datatablemodel.h>
-#include <src/gnuplot/gnuplotwidget.h>
+#include <src/data/CorrelatorData.h>
+#include <src/data/DataTableModel.h>
+#include <src/gnuplot/GnuplotWidget.h>
 
 /******************************************************************************
  *                          Main application window                           *

@@ -17,8 +17,8 @@
  * along with Plateau.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <src/global.h>
-#include <src/mainwindow.h>
+#include <src/Global.h>
+#include <src/MainWindow.h>
 
 using namespace Latan;
 

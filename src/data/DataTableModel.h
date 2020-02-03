@@ -21,7 +21,7 @@
 #define DATAMODEL_H
 
 #include <QAbstractTableModel>
-#include <src/data/correlatordata.h>
+#include <src/data/CorrelatorData.h>
 
 /******************************************************************************
  *                       Model for correlator data table                      *

@@ -17,8 +17,8 @@
  * along with Plateau.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "datatablemodel.h"
-#include <src/global.h>
+#include "DataTableModel.h"
+#include <src/Global.h>
 #include <QFileInfo>
 #include <QDebug>
 
