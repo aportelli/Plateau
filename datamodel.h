@@ -64,7 +64,7 @@ public:
     // get transform
     Transform getTransform(const int i) const;
     // get file list
-    const QStringList & getList() const;
+    const QStringList & getFileList() const;
     // direct data access
     CorrelatorData * data(void);
 

@@ -286,7 +286,7 @@ DataModel::Transform DataModel::getTransform(const int i) const
 }
 
 // get file list ///////////////////////////////////////////////////////////////
-const QStringList & DataModel::getList() const
+const QStringList & DataModel::getFileList() const
 {
     return fileList_;
 }

@@ -40,6 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
         gpWidget_[p] = new GnuplotWidget(&plot_[p], this);
     }
     ui_->setupUi(this);
+    setWindowTitle("Plateau");
     connect(data_, SIGNAL(combinedSampleChanged()), this, SLOT(replot()));
     connect(ui_->logAbsCheckBox, SIGNAL(stateChanged(int)),
             this, SIGNAL(plotOptionsChanged()));
@@ -324,7 +325,7 @@ void MainWindow::saveProject(void)
         QDataStream out(&file);
 
         out.setVersion(QDataStream::Qt_4_5);
-        out << dataModel_->getList();
+        out << dataModel_->getFileList();
     }
 }
 
