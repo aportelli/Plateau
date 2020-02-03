@@ -17,10 +17,8 @@
  * along with Plateau.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "global.h"
-#include "mainwindow.h"
-#include "correlatordata.h"
-#include <LatAnalyze/Core/Math.hpp>
+#include <src/global.h>
+#include <src/mainwindow.h>
 
 using namespace Latan;
 

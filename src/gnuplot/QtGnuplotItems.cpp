@@ -1,5 +1,7 @@
 /* GNUPLOT - QtGnuplotItems.cpp */
 
+#define QT_NO_DEPRECATED_WARNINGS
+
 /*[
  * Copyright 2009   Jérôme Lodewyck
  *

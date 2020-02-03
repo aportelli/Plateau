@@ -21,12 +21,12 @@
 #define DATAMODEL_H
 
 #include <QAbstractTableModel>
-#include "correlatordata.h"
+#include <src/data/correlatordata.h>
 
 /******************************************************************************
  *                       Model for correlator data table                      *
  ******************************************************************************/
-class DataModel : public QAbstractTableModel
+class DataTableModel : public QAbstractTableModel
 {
     Q_OBJECT
 
@@ -39,7 +39,7 @@ public:
 
 public:
     // constructor
-    DataModel(CorrelatorData *data, QObject *parent = nullptr);
+    DataTableModel(CorrelatorData *data, QObject *parent = nullptr);
     // QAbstractTableModel subclassing
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -78,7 +78,7 @@ private:
 };
 
 // transform compare
-bool operator==(const DataModel::Transform a, const DataModel::Transform b);
-bool operator!=(const DataModel::Transform a, const DataModel::Transform b);
+bool operator==(const DataTableModel::Transform a, const DataTableModel::Transform b);
+bool operator!=(const DataTableModel::Transform a, const DataTableModel::Transform b);
 
 #endif // DATAMODEL_H

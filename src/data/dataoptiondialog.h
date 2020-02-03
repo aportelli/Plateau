@@ -21,7 +21,7 @@
 #define DATAOPTIONDIALOG_H
 
 #include <QDialog>
-#include "datamodel.h"
+#include <src/data/datatablemodel.h>
 
 namespace Ui {
 class DataOptionDialog;
@@ -34,7 +34,7 @@ class DataOptionDialog : public QDialog
 public:
     struct Option
     {
-        DataModel::Transform tr;
+        DataTableModel::Transform tr;
         QString              filename;
         bool                 accepted;
     };
@@ -46,7 +46,7 @@ public:
                                 QWidget *parent = nullptr);
 
     QString              filename(void);
-    DataModel::Transform transform(void);
+    DataTableModel::Transform transform(void);
 
 public slots:
     void getFilename(void);

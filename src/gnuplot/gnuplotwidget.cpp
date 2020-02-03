@@ -19,6 +19,7 @@
 
 #include "gnuplotwidget.h"
 #include "ui_gnuplotwidget.h"
+#include <src/global.h>
 
 using namespace Latan;
 

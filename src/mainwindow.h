@@ -21,10 +21,10 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "correlatordata.h"
-#include "datamodel.h"
-#include "gnuplotwidget.h"
 #include <LatAnalyze/Physics/EffectiveMass.hpp>
+#include <src/data/correlatordata.h>
+#include <src/data/datatablemodel.h>
+#include <src/gnuplot/gnuplotwidget.h>
 
 /******************************************************************************
  *                          Main application window                           *
@@ -93,7 +93,7 @@ private:
     CorrelatorData                     *data_;
     std::array<GnuplotWidget *, nPlot> gpWidget_;
     std::array<Latan::Plot, nPlot>     plot_;
-    DataModel                          *dataModel_;
+    DataTableModel                          *dataModel_;
 };
 
 #endif // MAINWINDOW_H

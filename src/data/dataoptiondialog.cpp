@@ -19,6 +19,7 @@
 
 #include "dataoptiondialog.h"
 #include "ui_dataoptiondialog.h"
+#include <src/global.h>
 #include <QFileDialog>
 
 DataOptionDialog::DataOptionDialog(Option opt, QWidget *parent) :
@@ -42,7 +43,7 @@ DataOptionDialog::Option DataOptionDialog::getDataOption(Option opt,
                                                          QWidget *parent)
 {
     DataOptionDialog *dialog = new DataOptionDialog(opt, parent);
-    Option           newOpt = {DataModel::defaultTransform, "", false};
+    Option           newOpt = {DataTableModel::defaultTransform, "", false};
 
     dialog->exec();
     if (dialog->result() == QDialog::Accepted)
@@ -62,9 +63,9 @@ QString DataOptionDialog::filename(void)
     return ui_->filenameLineEdit->text();
 }
 
-DataModel::Transform DataOptionDialog::transform(void)
+DataTableModel::Transform DataOptionDialog::transform(void)
 {
-    DataModel::Transform tr;
+    DataTableModel::Transform tr;
 
     tr.ft    = (ui_->ftCheckBox->checkState() == Qt::Checked);
     tr.fold  = (ui_->foldCheckBox->checkState() == Qt::Checked);

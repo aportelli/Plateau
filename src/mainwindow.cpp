@@ -19,8 +19,9 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "gnuplotwidget.h"
-#include "dataoptiondialog.h"
+#include <src/global.h>
+#include <src/data/dataoptiondialog.h>
+#include <src/gnuplot/gnuplotwidget.h>
 
 using namespace Latan;
 
@@ -32,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui_(new Ui::MainWindow),
     data_(new CorrelatorData(this)),
-    dataModel_(new DataModel(data_, this))
+    dataModel_(new DataTableModel(data_, this))
 
 {
     for (unsigned int p = 0; p < nPlot; ++p)

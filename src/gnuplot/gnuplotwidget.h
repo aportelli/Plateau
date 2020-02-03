@@ -20,11 +20,11 @@
 #ifndef GNUPLOTWIDGET_H
 #define GNUPLOTWIDGET_H
 
-#include "global.h"
-#include "gnuplot/QtGnuplotInstance.h"
-#include "gnuplot/QtGnuplotWidget.h"
 #include <QMainWindow>
 #include <LatAnalyze/Core/Plot.hpp>
+#include <src/global.h>
+#include <src/gnuplot/QtGnuplotInstance.h>
+#include <src/gnuplot/QtGnuplotWidget.h>
 
 /******************************************************************************
  *                             Gnuplot widget                                 *

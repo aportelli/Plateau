@@ -17,34 +17,34 @@
  * along with Plateau.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "datamodel.h"
+#include "datatablemodel.h"
+#include <src/global.h>
 #include <QFileInfo>
 #include <QDebug>
-#include "global.h"
 
-constexpr DataModel::Transform DataModel::defaultTransform;
+constexpr DataTableModel::Transform DataTableModel::defaultTransform;
 
 /******************************************************************************
  *                           DataModel methods                                *
  ******************************************************************************/
 // constructor /////////////////////////////////////////////////////////////////
-DataModel::DataModel(CorrelatorData *data, QObject *parent)
+DataTableModel::DataTableModel(CorrelatorData *data, QObject *parent)
     : QAbstractTableModel(parent)
     , data_(data)
 {}
 
 // QAbstractTableModel subclassing /////////////////////////////////////////////
-int DataModel::rowCount(const QModelIndex &) const
+int DataTableModel::rowCount(const QModelIndex &) const
 {
     return fileList_.size();
 }
 
-int DataModel::columnCount(const QModelIndex &) const
+int DataTableModel::columnCount(const QModelIndex &) const
 {
     return 4;
 }
 
-QVariant DataModel::data(const QModelIndex &index, int role) const
+QVariant DataTableModel::data(const QModelIndex &index, int role) const
 {
     if (role == Qt::DisplayRole)
     {
@@ -95,7 +95,7 @@ QVariant DataModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-QVariant DataModel::headerData(int section, Qt::Orientation orientation,
+QVariant DataTableModel::headerData(int section, Qt::Orientation orientation,
                                int role) const
 {
     if (role == Qt::DisplayRole && orientation == Qt::Horizontal)
@@ -116,7 +116,7 @@ QVariant DataModel::headerData(int section, Qt::Orientation orientation,
     return QVariant();
 }
 
-Qt::ItemFlags DataModel::flags(const QModelIndex &index) const
+Qt::ItemFlags DataTableModel::flags(const QModelIndex &index) const
 {
     if (index.column() == 0)
     {
@@ -128,7 +128,7 @@ Qt::ItemFlags DataModel::flags(const QModelIndex &index) const
     }
 }
 
-bool DataModel::insertRows(int row, int count, const QModelIndex &parent)
+bool DataTableModel::insertRows(int row, int count, const QModelIndex &parent)
 {
     beginInsertRows(parent, row, row + count - 1);
 
@@ -143,7 +143,7 @@ bool DataModel::insertRows(int row, int count, const QModelIndex &parent)
     return true;
 }
 
-bool DataModel::removeRows(int row, int count, const QModelIndex &parent)
+bool DataTableModel::removeRows(int row, int count, const QModelIndex &parent)
 {
     beginRemoveRows(parent, row, row + count - 1);
 
@@ -159,7 +159,7 @@ bool DataModel::removeRows(int row, int count, const QModelIndex &parent)
 }
 
 // add/remove files ////////////////////////////////////////////////////////////
-void DataModel::addFile(const QString filename, const Transform tr)
+void DataTableModel::addFile(const QString filename, const Transform tr)
 {
     int i = fileList_.indexOf(filename);
 
@@ -184,7 +184,7 @@ void DataModel::addFile(const QString filename, const Transform tr)
     }
 }
 
-void DataModel::addFiles(const QStringList &list)
+void DataTableModel::addFiles(const QStringList &list)
 {
     for (int i = 0; i < list.size(); ++i)
     {
@@ -192,7 +192,7 @@ void DataModel::addFiles(const QStringList &list)
     }
 }
 
-void DataModel::editFile(const QString filename, const QString newFilename,
+void DataTableModel::editFile(const QString filename, const QString newFilename,
                          const Transform tr)
 {
     int i = fileList_.indexOf(filename);
@@ -209,7 +209,7 @@ void DataModel::editFile(const QString filename, const QString newFilename,
     }
 }
 
-void DataModel::removeFile(const QString filename)
+void DataTableModel::removeFile(const QString filename)
 {
     int i = fileList_.indexOf(filename);
 
@@ -226,7 +226,7 @@ void DataModel::removeFile(const QString filename)
 }
 
 // transform correlator ////////////////////////////////////////////////////////
-void DataModel::transform(const QString filename, const Transform tr)
+void DataTableModel::transform(const QString filename, const Transform tr)
 {
     int i = fileList_.indexOf(filename);
 
@@ -261,7 +261,7 @@ void DataModel::transform(const QString filename, const Transform tr)
 }
 
 // clear all data //////////////////////////////////////////////////////////////
-void DataModel::clear(void)
+void DataTableModel::clear(void)
 {
     while (!fileList_.empty())
     {
@@ -270,29 +270,29 @@ void DataModel::clear(void)
 }
 
 // get file name & path ////////////////////////////////////////////////////////
-QString DataModel::getFilepath(const int i) const
+QString DataTableModel::getFilepath(const int i) const
 {
     return data(index(i, 2)).toString();
 }
 
-QString DataModel::getFilename(const int i) const
+QString DataTableModel::getFilename(const int i) const
 {
     return data(index(i, 1)).toString();
 }
 
-DataModel::Transform DataModel::getTransform(const int i) const
+DataTableModel::Transform DataTableModel::getTransform(const int i) const
 {
     return trList_.at(i);
 }
 
 // get file list ///////////////////////////////////////////////////////////////
-const QStringList & DataModel::getFileList() const
+const QStringList & DataTableModel::getFileList() const
 {
     return fileList_;
 }
 
 // direct data access //////////////////////////////////////////////////////////
-CorrelatorData * DataModel::data(void)
+CorrelatorData * DataTableModel::data(void)
 {
     return data_;
 }
@@ -300,12 +300,12 @@ CorrelatorData * DataModel::data(void)
 /******************************************************************************
  *                           Transform compare                                *
  ******************************************************************************/
-bool operator==(const DataModel::Transform a, const DataModel::Transform b)
+bool operator==(const DataTableModel::Transform a, const DataTableModel::Transform b)
 {
     return ((a.fold == b.fold) and (a.ft == b.ft) and (a.shift == b.shift));
 }
 
-bool operator!=(const DataModel::Transform a, const DataModel::Transform b)
+bool operator!=(const DataTableModel::Transform a, const DataTableModel::Transform b)
 {
     return !(a == b);
 }
