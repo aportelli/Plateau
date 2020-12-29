@@ -27,6 +27,10 @@ int main(int argc, char* argv[])
     MainWindow     *mainWindow;
     QApplication   app(argc, argv);
 
+    if (QStyleFactory::keys().contains("Fusion"))
+    {
+        QApplication::setStyle("Fusion");
+    }
     mainWindow = new MainWindow;
     mainWindow->show();
 

@@ -4,6 +4,9 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11 silent
 
+QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.15
+QMAKE_TARGET_BUNDLE_PREFIX = org.aportelli
+
 SOURCES += \
     src/MainWindow.cpp \
     src/data/CorrelatorData.cpp \
@@ -53,8 +56,6 @@ LIBS       += -L$$DEP/lib/ -lLatAnalyze
 QMAKE_CXXFLAGS += $$system("$$DEP/bin/latan-config --cxxflags")
 QMAKE_CXXFLAGS += -I$$DEP/include
 
-QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.14
-QMAKE_TARGET_BUNDLE_PREFIX = org.aportelli
 
 DISTFILES += \
     README.md \

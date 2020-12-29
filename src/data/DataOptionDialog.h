@@ -35,8 +35,8 @@ public:
     struct Option
     {
         DataTableModel::Transform tr;
-        QString              filename;
-        bool                 accepted;
+        QString                   filename;
+        bool                      accepted;
     };
 
 public:
