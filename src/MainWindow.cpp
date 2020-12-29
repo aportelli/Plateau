@@ -47,8 +47,11 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SIGNAL(plotOptionsChanged()));
     connect(ui_->combineCheckBox, SIGNAL(stateChanged(int)),
             this, SIGNAL(plotOptionsChanged()));
+    connect(ui_->combineCode, SIGNAL(textChanged()),
+            this, SLOT(storePlotOptions()));
     connect(ui_->emTypeComboBox, SIGNAL(currentIndexChanged(int)),
             this, SIGNAL(plotOptionsChanged()));
+    connect(this, SIGNAL(plotOptionsChanged()), this, SLOT(storePlotOptions()));
     connect(this, SIGNAL(plotOptionsChanged()), this, SLOT(replot()));
     ui_->corrPlotLayout->addWidget(gpWidget_[PlotType::corr]);
     ui_->emPlotLayout->addWidget(gpWidget_[PlotType::em]);
@@ -58,8 +61,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui_->editDataButton->setDefaultAction(ui_->actionEditData);
     ui_->removeDataButton->setDefaultAction(ui_->actionRemoveFile);
     ui_->combineButton->setDefaultAction(ui_->actionCombine);
-    ui_->combineCode->setVisible(combineDataChecked());
-    ui_->combineButton->setVisible(combineDataChecked());
+    storePlotOptions();
+    ui_->combineCode->setVisible(plotOptions_.combineData);
+    ui_->combineButton->setVisible(plotOptions_.combineData);
 }
 
 // destructor //////////////////////////////////////////////////////////////////
@@ -86,7 +90,7 @@ void MainWindow::plotCorr(Plot &p, const DVec &t, const DMatSample &c,
 {
     DMatSample tmp = c;
 
-    if (logAbsChecked())
+    if (plotOptions_.logAbs)
     {
         FOR_STAT_ARRAY(tmp, s)
         {
@@ -122,7 +126,7 @@ void MainWindow::replot(const PlotType p)
         {
         case PlotType::corr:
         {
-            if (combineDataChecked() and data_->hasCombination())
+            if (plotOptions_.combineData and data_->hasCombination())
             {
                 plotCorr(plot_[p], t, data_->combinedSample(), "combined data");
             }
@@ -140,9 +144,9 @@ void MainWindow::replot(const PlotType p)
         break;
         case PlotType::em:
         {
-            EffectiveMass em(getEmType());
+            EffectiveMass em(plotOptions_.emType);
 
-            if (combineDataChecked() and data_->hasCombination())
+            if (plotOptions_.combineData and data_->hasCombination())
             {
                 plotEm(plot_[p], em, data_->combinedSample(), "combined data");
             }
@@ -166,39 +170,6 @@ void MainWindow::replot(const PlotType p)
     }
 }
 
-// get checkboxes status ///////////////////////////////////////////////////////
-bool MainWindow::logAbsChecked(void) const
-{
-    return (ui_->logAbsCheckBox->checkState() == Qt::CheckState::Checked);
-}
-
-bool MainWindow::combineDataChecked(void) const
-{
-    return (ui_->combineCheckBox->checkState() == Qt::CheckState::Checked);
-}
-
-// get em type /////////////////////////////////////////////////////////////////
-#define IF_TYPE(t) \
-if (selected == #t) {type = CorrelatorType::t;}
-#define ELIF_TYPE(t) else IF_TYPE(t)
-
-CorrelatorType MainWindow::getEmType(void) const
-{
-    QString        selected = ui_->emTypeComboBox->currentText();
-    CorrelatorType type = CorrelatorType::undefined;
-
-    IF_TYPE(exp)
-    ELIF_TYPE(cosh)
-    ELIF_TYPE(sinh)
-    ELIF_TYPE(linear)
-    ELIF_TYPE(cst)
-
-    return type;
-}
-
-#undef IF_TYPE
-#undef ELIF_TYPE
-
 /******************************************************************************
  *                              MainWindow slots                              *
  ******************************************************************************/
@@ -212,7 +183,7 @@ void MainWindow::addData(void)
     if (!filename.empty())
     {
         dataModel_->addFiles(filename);
-        if (!combineDataChecked())
+        if (!plotOptions_.combineData)
         {
             emit plotOptionsChanged();
         }
@@ -238,7 +209,7 @@ void MainWindow::editData(void)
             if (QFile::exists(opt.filename))
             {
                 dataModel_->editFile(filename, opt.filename, opt.tr);
-                if (!combineDataChecked())
+                if (!plotOptions_.combineData)
                 {
                     emit plotOptionsChanged();
                 }
@@ -268,7 +239,7 @@ void MainWindow::removeData(void)
     {
         dataModel_->removeFile(toRemove.at(j));
     }
-    if (!combineDataChecked())
+    if (!plotOptions_.combineData)
     {
         emit plotOptionsChanged();
     }
@@ -277,9 +248,66 @@ void MainWindow::removeData(void)
 // combine data ////////////////////////////////////////////////////////////////
 void MainWindow::combineData(void)
 {
-   data_->setFunction(ui_->combineCode->toPlainText());
+   data_->setFunction(plotOptions_.combineCode);
    data_->combine();
 }
+
+// refresh plot options ////////////////////////////////////////////////////////
+#define IF_TYPE(t) \
+if (selected == #t) {plotOptions_.emType = CorrelatorType::t;}
+#define ELIF_TYPE(t) else IF_TYPE(t)
+
+void MainWindow::storePlotOptions(void)
+{
+    QString selected = ui_->emTypeComboBox->currentText();
+
+    plotOptions_.logAbs =
+        (ui_->logAbsCheckBox->checkState() == Qt::CheckState::Checked);
+    plotOptions_.combineData =
+        (ui_->combineCheckBox->checkState() == Qt::CheckState::Checked);
+    plotOptions_.combineCode = ui_->combineCode->toPlainText();
+    qDebug() << "store" << plotOptions_.combineCode;
+    plotOptions_.emType = CorrelatorType::undefined;
+    IF_TYPE(exp)
+    ELIF_TYPE(cosh)
+    ELIF_TYPE(sinh)
+    ELIF_TYPE(linear)
+    ELIF_TYPE(cst)
+}
+
+#undef IF_TYPE
+#undef ELIF_TYPE
+
+#define IF_TYPE(t) \
+if (plotOptions_.emType == CorrelatorType::t) {selected = #t;}
+#define ELIF_TYPE(t) else IF_TYPE(t)
+
+void MainWindow::restorePlotOptions(void)
+{
+    QString selected;
+    int     index;
+
+    ui_->logAbsCheckBox->setCheckState(
+        plotOptions_.logAbs ?
+        Qt::CheckState::Checked : Qt::CheckState::Unchecked);
+    ui_->combineCheckBox->setCheckState(
+        plotOptions_.combineData ?
+        Qt::CheckState::Checked : Qt::CheckState::Unchecked);
+    qDebug() << "restore" << plotOptions_.combineCode;
+    ui_->combineCode->setPlainText(plotOptions_.combineCode);
+    IF_TYPE(exp)
+    ELIF_TYPE(cosh)
+    ELIF_TYPE(sinh)
+    ELIF_TYPE(linear)
+    ELIF_TYPE(cst)
+    index = ui_->emTypeComboBox->findText(selected);
+    ui_->emTypeComboBox->setCurrentIndex(index);
+
+    emit plotOptionsChanged();
+}
+
+#undef IF_TYPE
+#undef ELIF_TYPE
 
 // redo all plots //////////////////////////////////////////////////////////////
 void MainWindow::replot(void)
@@ -326,7 +354,8 @@ void MainWindow::saveProject(void)
         QDataStream out(&file);
 
         out.setVersion(QDataStream::Qt_4_5);
-        out << dataModel_->getFileList();
+        out << plotOptions_;
+        out << *dataModel_;
     }
 }
 
@@ -350,12 +379,35 @@ void MainWindow::openProject(void)
         QStringList list;
 
         in.setVersion(QDataStream::Qt_4_5);
-        in >> list;
-        dataModel_->clear();
-        dataModel_->addFiles(list);
-        if (!combineDataChecked())
-        {
-            emit plotOptionsChanged();
-        }
+        in >> plotOptions_;
+        qDebug() << "load" << plotOptions_.combineCode;
+        in >> *dataModel_;
+        restorePlotOptions();
     }
+}
+
+/******************************************************************************
+ *                       plot options serialisation                           *
+ ******************************************************************************/
+QDataStream &operator<<(QDataStream &out, const MainWindow::PlotOptions &p)
+{
+    out << p.logAbs;
+    out << p.combineData;
+    out << p.combineCode;
+    out << static_cast<qint32>(p.emType);
+
+    return out;
+}
+
+QDataStream &operator>>(QDataStream &in, MainWindow::PlotOptions &p)
+{
+    qint32 emType;
+
+    in >> p.logAbs;
+    in >> p.combineData;
+    in >> p.combineCode;
+    in >> emType;
+    p.emType = static_cast<Latan::CorrelatorType>(emType);
+
+    return in;
 }

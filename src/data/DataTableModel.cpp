@@ -171,7 +171,6 @@ void DataTableModel::addFile(const QString filename, const Transform tr)
 
             insertRows(last, 1);
             fileList_[last] = filename;
-            trList_[last]   = tr;
             i               = last;
             data_->load(i, filename);
             transform(filename, tr);
@@ -295,6 +294,47 @@ const QStringList & DataTableModel::getFileList() const
 CorrelatorData * DataTableModel::data(void)
 {
     return data_;
+}
+
+/******************************************************************************
+ *                             Serialisation                                  *
+ ******************************************************************************/
+QDataStream &operator<<(QDataStream &s, const DataTableModel &d)
+{
+    quint32 size = d.fileList_.size();
+
+    s << size;
+    for (quint32 i = 0; i < size; ++i)
+    {
+        s << d.fileList_.at(i);
+        s << d.trList_.at(i).ft;
+        s << d.trList_.at(i).fold;
+        s << static_cast<quint32>(d.trList_.at(i).shift);
+    }
+
+    return s;
+}
+
+QDataStream &operator>>(QDataStream &s, DataTableModel &d)
+{
+    quint32 size;
+
+    d.clear();
+    s >> size;
+    for (quint32 i = 0; i < size; ++i)
+    {
+        DataTableModel::Transform tr;
+        QString                   filename;
+        quint32                   buf;
+
+        s >> filename;
+        s >> tr.ft;
+        s >> tr.fold;
+        s >> buf; tr.shift = buf;
+        d.addFile(filename, tr);
+    }
+
+    return s;
 }
 
 /******************************************************************************

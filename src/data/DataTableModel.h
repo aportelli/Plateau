@@ -67,7 +67,9 @@ public:
     const QStringList & getFileList() const;
     // direct data access
     CorrelatorData * data(void);
-
+    // serialisation
+    friend QDataStream &operator<<(QDataStream &s, const DataTableModel &d);
+    friend QDataStream &operator>>(QDataStream &s, DataTableModel &d);
 public:
     static constexpr Transform  defaultTransform = {false, false, 0};
 
@@ -76,6 +78,10 @@ private:
     QList<Transform>        trList_;
     CorrelatorData          *data_;
 };
+
+// serialisation
+QDataStream &operator<<(QDataStream &s, const DataTableModel &d);
+QDataStream &operator>>(QDataStream &s, DataTableModel &d);
 
 // transform compare
 bool operator==(const DataTableModel::Transform a, const DataTableModel::Transform b);

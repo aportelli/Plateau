@@ -45,6 +45,13 @@ public:
     };
     static constexpr unsigned int nPlot = 2;
 
+    struct PlotOptions
+    {
+        bool                  logAbs, combineData;
+        Latan::CorrelatorType emType;
+        QString               combineCode;
+    };
+
 public:
     // constructor/destructor
     explicit MainWindow(QWidget *parent = nullptr);
@@ -53,11 +60,7 @@ public:
     GnuplotWidget * gnuplotWidget(const PlotType p);
     // replot specific plot
     void replot(const PlotType p);
-    // get checkboxes status
-    bool logAbsChecked(void) const;
-    bool combineDataChecked(void) const;
-    // get em type
-    Latan::CorrelatorType getEmType(void) const;
+
 public slots:
     // add data dialog
     void addData(void);
@@ -67,6 +70,9 @@ public slots:
     void removeData(void);
     // combine data
     void combineData(void);
+    // plot options
+    void storePlotOptions(void);
+    void restorePlotOptions(void);
     // redo all plots
     void replot(void);
     // refresh all plots (does not actually redo the plots)
@@ -93,7 +99,12 @@ private:
     CorrelatorData                     *data_;
     std::array<GnuplotWidget *, nPlot> gpWidget_;
     std::array<Latan::Plot, nPlot>     plot_;
-    DataTableModel                          *dataModel_;
+    PlotOptions                        plotOptions_;
+    DataTableModel                     *dataModel_;
 };
+
+// plot options serialisation //////////////////////////////////////////////////
+QDataStream &operator<<(QDataStream &out, const MainWindow::PlotOptions &p);
+QDataStream &operator>>(QDataStream &out, MainWindow::PlotOptions &p);
 
 #endif // MAINWINDOW_H
