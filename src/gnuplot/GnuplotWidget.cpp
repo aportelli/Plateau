@@ -71,7 +71,7 @@ void GnuplotWidget::gnuplotOutput(const QString& output)
 {
     QTextStream out(stdout);
 
-    out << output << Qt::endl;
+    out << output << endl;
 }
 
 // display plot ////////////////////////////////////////////////////////////////
