@@ -1,0 +1,47 @@
+name: Build Ubuntu
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-20.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Checkout submodules
+      shell: bash
+      run: |
+        git submodule sync --recursive
+        git submodule update --init --force --recursive
+        cd dependencies/LatAnalyze
+        git rev-parse HEAD > ../.id
+        cd ../..
+    - name: Install basic dependencies
+      run: |
+        sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+        sudo apt install qt5-default qt5-doc qt5-doc-html qtbase5-doc-html qtbase5-examples build-essential libqt5svg5-dev libqt5svg5
+        sudo apt install cmake bison flex python3-distutils
+    - name: Check cache
+      uses: actions/cache@v1
+      with:
+        path: dependencies
+        key: dependencies-${{ runner.os }}-${{ hashFiles('dependencies/.id') }}
+    - name: Build LatAnalyze & dependencies
+      shell: bash
+      run: ./update-latan.sh
+    - name: Build Plateau
+      shell: bash
+      run: |
+        qmake Plateau.pro -spec linux-clang CONFIG+=x86_64
+        make -j4
+#     - name: Deploy Plateau
+#       shell: bash
+#       run: |
+#         macdeployqt Plateau.app -dmg -always-overwrite -verbose=2
+#     - name: Upload application
+#       uses: actions/upload-artifact@v1
+#       with:
+#         name: Plateau.dmg
+#         path: Plateau.dmg
