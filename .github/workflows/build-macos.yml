@@ -21,7 +21,7 @@ jobs:
     - name: Install basic dependencies
       run: brew install automake autoconf libtool bison flex
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2.2.1
+      uses: jurplel/install-qt-action@v2
     - name: Check cache
       uses: actions/cache@v1
       with:
