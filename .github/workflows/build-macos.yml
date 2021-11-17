@@ -5,11 +5,11 @@ on: [push]
 jobs:
   build:
 
-    runs-on: macos-10.15
+    runs-on: macos-11
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
     - name: Checkout submodules
       shell: bash
       run: |
@@ -22,6 +22,8 @@ jobs:
       run: brew install automake autoconf libtool bison flex
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
+      with:
+        version: 6.2.1
     - name: Check cache
       uses: actions/cache@v1
       with:
@@ -31,7 +33,7 @@ jobs:
       shell: bash
       run: |
         export PATH=/usr/local/opt/flex/bin:/usr/local/opt/bison/bin:${PATH}
-        MACOSX_DEPLOYMENT_TARGET=10.14 ./update-latan.sh
+        MACOSX_DEPLOYMENT_TARGET=11 ./update-latan.sh
     - name: Build Plateau
       shell: bash
       run: |
