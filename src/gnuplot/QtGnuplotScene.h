@@ -44,14 +44,18 @@
 #ifndef QTGNUPLOTSCENE_H
 #define QTGNUPLOTSCENE_H
 
-#define EAM_BOXED_TEXT 1
-
 #include "QtGnuplotEvent.h"
 #include "QtGnuplotItems.h"
 
 #include <QGraphicsScene>
 #include <QGraphicsItemGroup>
-#include <QTime>
+
+#if (QT_VERSION < QT_VERSION_CHECK(4, 7, 0))
+# include <QTime>
+typedef QTime QElapsedTimer;
+#else
+# include <QElapsedTimer>
+#endif
 
 class QtGnuplotEnhanced;
 class QtGnuplotWidget;
@@ -106,7 +110,7 @@ private:
 	QPoint  m_currentBoxOrigin;
 	QPoint  m_textOffset;
 	double  m_currentZ;
-	QTime   m_watches[4];
+	QElapsedTimer   m_watches[4];
 	int     m_currentPlotNumber;
 	bool    m_inKeySample;
 	bool    m_preserve_visibility;
@@ -131,8 +135,10 @@ private:
 	QtGnuplotEnhanced* m_enhanced;  // Current enhanced text block
 	QList<QtGnuplotKeybox> m_key_boxes;
 	QString m_currentHypertext;
+	QString m_selectedHypertext;
 	QList<QGraphicsItem*> m_hypertextList;
 	QGraphicsPixmapItem* m_hyperimage;
+	QFont m_hypertextFont;
 
 	// Axis scales
 	bool   m_axisValid[5];	// x, y, x2, y2, z (indicates 3D plot)

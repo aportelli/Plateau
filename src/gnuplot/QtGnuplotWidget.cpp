@@ -1,7 +1,5 @@
 /* GNUPLOT - QtGnuplotWidget.cpp */
 
-#define QT_NO_DEPRECATED_WARNINGS
-
 /*[
  * Copyright 2009   Jérôme Lodewyck
  *
@@ -49,7 +47,7 @@
 #include "QtGnuplotItems.h"
 
 extern "C" {
-#include "mousecmn.h"
+#include "../mousecmn.h"
 }
 
 #include <QtGui>
@@ -78,6 +76,7 @@ void QtGnuplotWidget::init()
 	m_active = false;
 	m_lastSizeRequest = QSize(-1, -1);
 	m_rounded = true;
+	m_ctrlQ = true;
 	m_backgroundColor = Qt::white;
 	m_antialias = true;
 	m_replotOnResize = true;
@@ -130,7 +129,7 @@ QSize QtGnuplotWidget::plotAreaSize() const
 
 void QtGnuplotWidget::setViewMatrix()
 {
-	m_view->resetMatrix();
+	m_view->resetTransform();
 }
 
 void QtGnuplotWidget::processEvent(QtGnuplotEventType type, QDataStream& in)
@@ -148,7 +147,7 @@ void QtGnuplotWidget::processEvent(QtGnuplotEventType type, QDataStream& in)
 		QSize s;
 		in >> s;
 		m_lastSizeRequest = s;
-		m_view->resetMatrix();
+		m_view->resetTransform();
 		QWidget* viewport = m_view->viewport();
 /*		qDebug() << "QtGnuplotWidget::processEvent Size request" << s << size() << " / viewport" << m_view->maximumViewportSize();
 		qDebug() << " widget size   " << size();
@@ -293,8 +292,13 @@ void QtGnuplotWidget::exportToPdf(const QString& fileName)
 	QPrinter printer;
 	printer.setOutputFormat(QPrinter::PdfFormat);
 	printer.setOutputFileName(fileName);
+#if QT_VERSION < QT_VERSION_CHECK(5, 3, 0)
 	printer.setPaperSize(QSizeF(m_scene->width(), m_scene->height()), QPrinter::Point);
 	printer.setPageMargins(0, 0, 0, 0, QPrinter::Point);
+#else
+	printer.setPageSize(QPageSize(QSizeF(m_scene->width(), m_scene->height()), QPageSize::Point));
+	printer.setPageMargins(QMarginsF(0, 0, 0, 0), QPageLayout::Point);
+#endif
 	QPainter painter(&printer);
 	painter.setRenderHints(renderHints());
 	m_scene->render(&painter);
@@ -328,6 +332,7 @@ void QtGnuplotWidget::loadSettings(const QSettings& settings)
 {
 	setAntialias(settings.value("antialias", true).toBool());
 	setRounded(settings.value("rounded", true).toBool());
+	setCtrlQ(settings.value("ctrlQ", true).toBool());
 	setBackgroundColor(settings.value("backgroundColor", QColor(Qt::white)).value<QColor>());
 	setReplotOnResize(settings.value("replotOnResize", true).toBool());
 	setStatusLabelActive(settings.value("statusLabelActive", false).toBool());
@@ -337,6 +342,7 @@ void QtGnuplotWidget::saveSettings(QSettings& settings) const
 {
 	settings.setValue("antialias", m_antialias);
 	settings.setValue("rounded", m_rounded);
+	settings.setValue("ctrlQ", m_ctrlQ);
 	settings.setValue("backgroundColor", m_backgroundColor);
 	settings.setValue("replotOnResize", m_replotOnResize);
 	settings.setValue("statusLabelActive", m_statusLabelActive);
@@ -351,6 +357,11 @@ void QtGnuplotWidget::setAntialias(bool value)
 void QtGnuplotWidget::setRounded(bool value)
 {
 	m_rounded = value;
+}
+
+void QtGnuplotWidget::setCtrlQ(bool value)
+{
+	m_ctrlQ = value;
 }
 
 void QtGnuplotWidget::setReplotOnResize(bool value)

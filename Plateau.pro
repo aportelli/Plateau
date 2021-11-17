@@ -4,7 +4,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11 silent
 
-QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.15
+QMAKE_MACOSX_DEPLOYMENT_TARGET = 11.0
 QMAKE_TARGET_BUNDLE_PREFIX = org.aportelli
 
 SOURCES += \
@@ -23,6 +23,7 @@ SOURCES += \
 HEADERS += \
     src/Global.h \
     src/MainWindow.h \
+    src/mousecmn.h \
     src/data/CorrelatorData.h \
     src/data/DataOptionDialog.h \
     src/data/DataTableModel.h \
@@ -31,8 +32,7 @@ HEADERS += \
     src/gnuplot/QtGnuplotInstance.h \
     src/gnuplot/QtGnuplotItems.h \
     src/gnuplot/QtGnuplotScene.h \
-    src/gnuplot/QtGnuplotWidget.h \
-    src/gnuplot/mousecmn.h
+    src/gnuplot/QtGnuplotWidget.h
 
 FORMS += \
     src/MainWindow.ui \
@@ -40,8 +40,6 @@ FORMS += \
     src/gnuplot/GnuplotWidget.ui
 
 RESOURCES +=
-
-TEMPLATE
 
 defined(LATAN_PREFIX, var) {
     DEP = $$LATAN_PREFIX
@@ -59,7 +57,5 @@ QMAKE_CXXFLAGS += -I$$DEP/include
 
 DISTFILES += \
     README.md \
+    update-gnuplot.sh \
     update-latan.sh
-
-SUBDIRS += \
-    src/gnuplot/QtGnuplot.pro

@@ -1,7 +1,5 @@
 /* GNUPLOT - QtGnuplotInstance.h */
 
-#define QT_NO_DEPRECATED_WARNINGS
-
 /*[
  * Copyright 2009   Jérôme Lodewyck
  *
@@ -74,9 +72,9 @@ void QtGnuplotInstance::setWidget(QtGnuplotWidget* widget)
 	if (m_widget)
 	{
 		QByteArray command;
-		command.append("set term qt widget \"" + m_widget->serverName() + "\" size " +
+        command.append(("set term qt widget \"" + m_widget->serverName() + "\" size " +
 		               QString::number(m_widget->plotAreaSize().width()) + "," +
-		               QString::number(m_widget->plotAreaSize().height()) + "\n");
+                       QString::number(m_widget->plotAreaSize().height()) + "\n").toLocal8Bit());
 		exec(command);
 	}
 }
@@ -121,7 +119,7 @@ QByteArray QtGnuplotInstance::execAndRead(const QByteArray& command, int msecs)
 QtGnuplotInstance& operator<<(QtGnuplotInstance& instance, const QString& command)
 {
 	QByteArray array;
-	array.append(command);
+    array.append(command.toLocal8Bit());
 	instance.exec(array);
 
 	return instance;

@@ -1,7 +1,5 @@
 /* GNUPLOT - QtGnuplotScene.cpp */
 
-#define QT_NO_DEPRECATED_WARNINGS
-
 /*[
  * Copyright 2009   Jérôme Lodewyck
  *
@@ -49,13 +47,17 @@
 #include "QtGnuplotItems.h"
 
 extern "C" {
-#include "mousecmn.h"
+#include "../mousecmn.h"
 // This is defined in term_api.h, but including it there fails to compile
 typedef enum t_fillstyle { FS_EMPTY, FS_SOLID, FS_PATTERN, FS_DEFAULT, FS_TRANSPARENT_SOLID, FS_TRANSPARENT_PATTERN } t_fillstyle;
 }
 
 #include <QtGui>
 #include <QDebug>
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+# define horizontalAdvance width
+#endif
 
 QtGnuplotScene::QtGnuplotScene(QtGnuplotEventHandler* eventHandler, QObject* parent)
 	: QGraphicsScene(parent)
@@ -165,9 +167,7 @@ void QtGnuplotScene::flushCurrentPointsItem()
 void QtGnuplotScene::update_key_box(const QRectF rect)
 {
 	if (m_currentPlotNumber > m_key_boxes.count()) {
-		// DEBUG Feb 2018 should no longer trigger
-		// because m_key_box insertion is done in layer code for GEAfterPlot
-		m_key_boxes.insert(m_currentPlotNumber, QtGnuplotKeybox(rect));
+		m_key_boxes.insert(m_currentPlotNumber-1, QtGnuplotKeybox(rect));
 	} else if (m_key_boxes[m_currentPlotNumber-1].isEmpty()) {
 		// Retain the visible/hidden flag when re-initializing the Keybox
 		bool tmp = m_key_boxes[m_currentPlotNumber-1].ishidden();
@@ -281,7 +281,7 @@ void QtGnuplotScene::processEvent(QtGnuplotEventType type, QDataStream& in)
 		{
 			flushCurrentPointsItem();
 			QPen pen = Qt::NoPen;
-			if (m_currentBrush.style() == Qt::SolidPattern)
+			if (m_currentBrush.isOpaque())
 				pen = m_currentBrush.color();
 			clipPolygon(polygon, false);
 			QGraphicsPolygonItem *path;
@@ -303,6 +303,21 @@ void QtGnuplotScene::processEvent(QtGnuplotEventType type, QDataStream& in)
 	{
 		QString fontName; in >> fontName;
 		int size        ; in >> size;
+
+		// strip :Bold or :Italic property out of font name
+		if (fontName.contains(":italic", Qt::CaseInsensitive))
+			m_font.setStyle(QFont::StyleItalic);
+		else
+			m_font.setStyle(QFont::StyleNormal);
+		if (fontName.contains(":bold", Qt::CaseInsensitive))
+			m_font.setWeight(QFont::Bold);
+		else
+			m_font.setWeight(QFont::Normal);
+		int sep = fontName.indexOf(":");
+		if (sep >= 0)
+			fontName.truncate(sep);
+
+		// Blank font name means keep using the previous font
 		m_font.setFamily(fontName);
 		m_font.setPointSize(size);
 		m_font.setStyleStrategy(QFont::ForceOutline);	// pcf fonts die if rotated
@@ -331,10 +346,11 @@ void QtGnuplotScene::processEvent(QtGnuplotEventType type, QDataStream& in)
 		// Create a hypertext label that will become visible on mouseover.
 		// The Z offset is a kludge to force the label into the foreground.
 		if (!m_currentHypertext.isEmpty()) {
-			QGraphicsTextItem* textItem = addText(m_currentHypertext, m_font);
+			QGraphicsTextItem* textItem = addText(m_currentHypertext, m_hypertextFont);
 			textItem->setPos(point + m_textOffset);
 			textItem->setZValue(m_currentZ+10000);
 			textItem->setVisible(false);
+			textItem->setData(1,m_currentPointSize);
 			m_hypertextList.append(textItem);
 			m_currentHypertext.clear();
 		}
@@ -362,13 +378,12 @@ void QtGnuplotScene::processEvent(QtGnuplotEventType type, QDataStream& in)
 			update_key_box(rect);
 		else
 			m_currentGroup.append(textItem);
-#ifdef EAM_BOXED_TEXT
+
 		if (m_inTextBox) {
 			m_currentTextBox |= rect;
 			m_currentBoxRotation = m_textAngle;
 			m_currentBoxOrigin = point;
 		}
-#endif
 	}
 	else if (type == GEEnhancedFlush)
 	{
@@ -412,13 +427,12 @@ void QtGnuplotScene::processEvent(QtGnuplotEventType type, QDataStream& in)
 			update_key_box(rect);
 		else
 			m_currentGroup.append(m_enhanced);
-#ifdef EAM_BOXED_TEXT
+
 		if (m_inTextBox) {
 			m_currentTextBox |= rect;
 			m_currentBoxRotation = m_textAngle;
 			m_currentBoxOrigin = point;
 		}
-#endif
 		m_enhanced = 0;
 	}
 	else if (type == GEImage)
@@ -500,12 +514,12 @@ void QtGnuplotScene::processEvent(QtGnuplotEventType type, QDataStream& in)
 			if (0 < m_currentPlotNumber && m_currentPlotNumber <= m_key_boxes.count())
 				newgroup->setVisible( !(m_key_boxes[m_currentPlotNumber-1].ishidden()) );
 			// Store it in an ordered list so we can toggle it by index
-			m_plot_group.insert(m_currentPlotNumber, newgroup);
+			m_plot_group.insert(m_currentPlotNumber-1, newgroup);
 		} 
 
 		if (m_currentPlotNumber >= m_key_boxes.count()) {
 			QRectF empty( QPointF(0,0), QPointF(0,0));
-			m_key_boxes.insert(m_currentPlotNumber,  empty);
+			m_key_boxes.append(empty);
 			m_key_boxes[m_currentPlotNumber-1].resetStatus();
 		}
 
@@ -587,8 +601,8 @@ void QtGnuplotScene::processEvent(QtGnuplotEventType type, QDataStream& in)
 	{
 		m_currentHypertext.clear();
 		in >> m_currentHypertext;
+		m_hypertextFont = m_font;
 	}
-#ifdef EAM_BOXED_TEXT
 	else if (type == GETextBox)
 	{
 		flushCurrentPointsItem();
@@ -646,12 +660,11 @@ void QtGnuplotScene::processEvent(QtGnuplotEventType type, QDataStream& in)
 			break;
 		}
 	}
-#endif
 	else if (type == GEFontMetricRequest)
 	{
 		QFontMetrics metrics(m_font);
 		int par1 = (metrics.ascent() + metrics.descent());
-		int par2 = metrics.width("0123456789")/10.;
+		int par2 = metrics.horizontalAdvance("0123456789")/10.;
 		m_eventHandler->postTermEvent(GE_fontprops, 0, 0, par1, par2, m_widget);
 	}
 	else if (type == GEDone)
@@ -805,7 +818,7 @@ void QtGnuplotScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
 
 	int button = 0;
 	     if (event->button()== Qt::LeftButton)  button = 1;
-	else if (event->button()== Qt::MidButton)   button = 2;
+	else if (event->button()== Qt::MiddleButton)   button = 2;
 	else if (event->button()== Qt::RightButton) button = 3;
 
 	m_eventHandler->postTermEvent(GE_buttonpress, 
@@ -855,9 +868,11 @@ void QtGnuplotScene::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 	// The first item in m_hypertextList is always a background rectangle for the text
 	int i = m_hypertextList.count();
 	bool hit = false;
+	m_selectedHypertext.clear();
 	while (i-- > 1) {
+		double trigger_distance = 5. * m_hypertextList[i]->data(1).toDouble();
 		if (!hit && ((m_hypertextList[i]->pos() - m_textOffset) 
-				- m_lastMousePos).manhattanLength() <= 5) {
+				- m_lastMousePos).manhattanLength() <= trigger_distance) {
 			hit = true;
 			m_hypertextList[i]->setVisible(true);
 			((QGraphicsRectItem *)m_hypertextList[0])->setRect(m_hypertextList[i]->boundingRect());
@@ -875,7 +890,11 @@ void QtGnuplotScene::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 				m_hyperimage->setPixmap(QPixmap(imagename));
 				m_hyperimage->setVisible(true);
 				break;
+			} else {
+				// If there is a mouse click we will push this to the clipboard
+				m_selectedHypertext = current_text;
 			}
+
 		} else {
 			m_hypertextList[i]->setVisible(false);
 			m_hyperimage->setVisible(false);
@@ -894,7 +913,7 @@ void QtGnuplotScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 
 	int button = 0;
 	     if (event->button()== Qt::LeftButton)  button = 1;
-	else if (event->button()== Qt::MidButton)   button = 2;
+	else if (event->button()== Qt::MiddleButton)   button = 2;
 	else if (event->button()== Qt::RightButton) button = 3;
 
 	qint64 time = 301;	/* Only used the first time in, when timer not yet running */
@@ -921,6 +940,10 @@ void QtGnuplotScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 		    }
 	    }
 	}
+
+	// Supposedly !isEmpty indicates the mouse is hovering over a hypertext anchor
+	if ((button == 1) && !m_selectedHypertext.isEmpty())
+		QApplication::clipboard()->setText(m_selectedHypertext);
 
 	QGraphicsScene::mouseReleaseEvent(event);
 }
@@ -949,7 +972,12 @@ void QtGnuplotScene::keyPressEvent(QKeyEvent* event)
 	int key = -1;
 	int live;
 
-	/// @todo quit on 'q' or Ctrl+'q'
+	// quit on 'q' or Ctrl+'q'
+	if ((event->key() == 'Q')
+	&& ( !m_widget->ctrlQ() || (QApplication::keyboardModifiers() & Qt::ControlModifier) )) {
+//		event->accept();	// doesn't seem to be needed?
+		key = -1;
+	} else
 
 	// Keypad keys
 	if (event->modifiers() & Qt::KeypadModifier)

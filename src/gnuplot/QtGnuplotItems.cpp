@@ -1,7 +1,5 @@
 /* GNUPLOT - QtGnuplotItems.cpp */
 
-#define QT_NO_DEPRECATED_WARNINGS
-
 /*[
  * Copyright 2009   Jérôme Lodewyck
  *
@@ -113,7 +111,7 @@ QRectF QtGnuplotEnhancedFragment::boundingRect() const
 qreal QtGnuplotEnhancedFragment::width() const
 {
 	QFontMetricsF metrics(m_font);
-	return metrics.width(m_text);
+    return metrics.horizontalAdvance(m_text);
 }
 
 void QtGnuplotEnhancedFragment::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
@@ -311,7 +309,7 @@ void QtGnuplotPoints::paint(QPainter* painter, const QStyleOptionGraphicsItem* o
 		{
 			QPen pen = Qt::NoPen;
 			QBrush& brush = m_filledPolygons[k].brush;
-			if (brush.style() == Qt::SolidPattern)
+			if (brush.isOpaque())
 				pen = brush.color();
 			painter->setPen(pen);
 			painter->setBrush(brush);
