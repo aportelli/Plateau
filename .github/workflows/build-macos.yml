@@ -33,7 +33,7 @@ jobs:
       shell: bash
       run: |
         export PATH=/usr/local/opt/flex/bin:/usr/local/opt/bison/bin:${PATH}
-        MACOSX_DEPLOYMENT_TARGET=11 ./update-latan.sh 6
+        ./update-latan.sh 6
     - name: Build Plateau
       shell: bash
       run: |
