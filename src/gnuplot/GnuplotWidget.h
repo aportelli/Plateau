@@ -57,6 +57,9 @@ public slots:
     void reset(void);
 
 private:
+    QString gnuplotPath(void);
+
+private:
     Ui::GnuplotWidget *ui_;
     QtGnuplotInstance *gp_;
     QtGnuplotWidget   *gpWidget_;

@@ -3,7 +3,7 @@
 set -e
 
 root_dir=$(pwd -P)
-git clone https://github.com/gnuplot/gnuplot.git
+git clone --depth 1 --branch master https://github.com/gnuplot/gnuplot.git
 cd gnuplot/src/qtterminal
 cp QtGnuplotEvent.* QtGnuplotInstance.* QtGnuplotItems.* QtGnuplotScene.* QtGnuplotWidget.* ${root_dir}/src/gnuplot/
 cd ..

@@ -376,7 +376,6 @@ void MainWindow::openProject(void)
         }
 
         QDataStream in(&file);
-        QStringList list;
 
         in.setVersion(QDataStream::Qt_4_5);
         in >> plotOptions_;

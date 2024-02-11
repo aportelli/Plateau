@@ -32,10 +32,6 @@ GnuplotWidget::GnuplotWidget(Plot *plot, QWidget *parent) :
     ui_(new Ui::GnuplotWidget),
     plot_(plot)
 {
-    QString gnuplotPath = plot->getProgramPath().c_str();
-
-    gnuplotPath += "/gnuplot";
-    INFO("found gnuplot at " + gnuplotPath);
     ui_->setupUi(this);
     gpWidget_ = new QtGnuplotWidget;
     gpWidget_->setBackgroundColor(Qt::white);
@@ -43,14 +39,14 @@ GnuplotWidget::GnuplotWidget(Plot *plot, QWidget *parent) :
     gpWidget_->setRounded(true);
     gpWidget_->setReplotOnResize(true);
     gpWidget_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    gp_ = new QtGnuplotInstance(gpWidget_, gnuplotPath);
-    connect(gp_, SIGNAL(gnuplotOutput(const QString&)), this,
-            SLOT(gnuplotOutput(const QString&)));
+    gp_ = new QtGnuplotInstance(gpWidget_, gnuplotPath());
+    connect(gp_, SIGNAL(gnuplotOutput(QString)), this,
+            SLOT(gnuplotOutput(QString)));
     setCentralWidget(gpWidget_);
     mouseLabel_   = new QLabel;
     ui_->mouseToolBar->addWidget(mouseLabel_);
-    connect(gpWidget_, SIGNAL(statusTextChanged(const QString&)), mouseLabel_,
-            SLOT(setText(const QString &)));
+    connect(gpWidget_, SIGNAL(statusTextChanged(QString)), mouseLabel_,
+            SLOT(setText(QString)));
     reset();
 }
 
@@ -135,4 +131,17 @@ void GnuplotWidget::reset(void)
     *plot_ << PlotRange(Axis::x, -1, 1) << PlotRange(Axis::y, -1, 1);
     *plot_ << PlotCommand("1/0");
     plot();
+}
+
+// get gnuplot path ///////////////////////////////////////////////////////////
+QString GnuplotWidget::gnuplotPath(void)
+{
+    Plot    p;
+    QString path = p.getProgramPath().c_str();
+
+    path += "/gnuplot";
+
+    qDebug() << path;
+
+    return path;
 }
