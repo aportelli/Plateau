@@ -1,4 +1,4 @@
 [submodule "dependencies/LatAnalyze"]
 	path = dependencies/LatAnalyze
 	url = https://github.com/aportelli/LatAnalyze.git
-	branch = develop
+	branch = feature/cmake
